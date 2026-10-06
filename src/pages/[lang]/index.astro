@@ -1,0 +1,699 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Bench from '../../components/Bench.astro';
+import Tag from '../../components/Tag.astro';
+import Status from '../../components/Status.astro';
+import SiteMap from '../../components/SiteMap.astro';
+import Prov from '../../components/Prov.astro';
+import TBD from '../../components/TBD.astro';
+import Icon from '../../components/Icon.astro';
+import aerial from '../../assets/photos/site-aerial-matarape.jpg';
+import team from '../../assets/photos/team-faces.jpg';
+import { projects } from '../../data/projects';
+import { company } from '../../data/company';
+import { href, langPaths, formatDate, ui, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+
+const news = (await getCollection('news', (e) => e.id.startsWith(`${lang}/`) && !e.data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const rail = [
+  { id: 'top', label: L('Beranda', 'Home') },
+  { id: 'chain', label: L('Rantai operasi', 'Value chain') },
+  { id: 'site', label: L('Lokasi', 'Site') },
+  { id: 'rkef', label: 'RKEF' },
+  { id: 'custody', label: L('Keberlanjutan', 'Sustainability') },
+  { id: 'news', label: L('Berita', 'News') },
+  { id: 'join', label: L('Karier', 'Careers') },
+];
+---
+<Base
+  lang={lang}
+  title={L('ASPIRE Stargate · Nikel terintegrasi dari Konawe Utara', 'ASPIRE Stargate · Integrated nickel from North Konawe')}
+  description={L(
+    'PT Anugerah Surya Pacific Resources (ASPIRE Stargate), anggota grup Astra: tambang nikel, smelter RKEF, kawasan industri, dan bahan baterai di Konawe Utara, Sulawesi Tenggara.',
+    'PT Anugerah Surya Pacific Resources (ASPIRE Stargate), a member of Astra: nickel mining, an RKEF smelter, an industrial park and battery materials in North Konawe, Southeast Sulawesi.',
+  )}
+  rail={rail}
+>
+  <!-- ============================================================ First viewport -->
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <div class="hero__photo">
+      <Image
+        src={aerial}
+        alt={L('Foto udara area tambang laterit Stargate di antara hutan dan Teluk Matarape, dengan tongkang di jeti', 'Aerial view of the Stargate laterite mine between forest and Matarape Bay, with a barge at the jetty')}
+        widths={[640, 960, 1280, 1500]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="hero__img"
+      />
+      <Prov class="hero__prov" label={t.photo} text={L('Area tambang dan jeti Stargate, Teluk Matarape · arsip ASPIRE', 'Stargate mine area and jetty, Matarape Bay · ASPIRE archive')} />
+    </div>
+
+    <div class="hero__ground ground-laterite">
+      <svg class="hero__benches" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path d="M0 2H520V50H760V98H1000V100H0Z" fill="var(--laterite)"></path>
+        <path d="M0 2H520V50H760V98H1000" fill="none" stroke="var(--ochre)" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+      </svg>
+      <div class="wrap hero__grid">
+        <div class="hero__text">
+          <h1 id="hero-title" class="display">
+            {lang === 'id' ? (<><span>Ditambang.</span> <span>Diolah.</span> <span>Dipulihkan.</span></>) : (<><span>Mined.</span> <span>Processed.</span> <span>Restored.</span></>)}
+          </h1>
+          <p class="lead">
+            {L(
+              'Nikel terintegrasi dari satu distrik: tambang, smelter RKEF, kawasan industri, dan bahan baterai di Konawe Utara, Sulawesi Tenggara.',
+              'Integrated nickel from one district: mine, RKEF smelter, industrial park and battery materials in North Konawe, Southeast Sulawesi.',
+            )}
+          </p>
+          <div class="actions">
+            <a class="btn btn--plate" href={href(lang, 'operations/')}>{L('Jelajahi operasi', 'Explore operations')} <Icon name="arrow" /></a>
+            <a class="btn btn--line" href={href(lang, 'contact/#enquiry')}>{L('Pertanyaan bisnis', 'Business enquiry')}</a>
+          </div>
+        </div>
+
+        <div class="hero__tags">
+          <h2 class="visually-hidden">{L('Enam lini operasi', 'Six lines of operation')}</h2>
+          <ul class="hero__wire" role="list">
+            {projects.map((p) => (
+              <li>
+                <Tag lang={lang} href={href(lang, `operations/${p.slug}/`)} no={p.no} code={p.code} name={p.name[lang]} stage={p.stage[lang]} status={p.status} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Value chain -->
+  <section class="section ground-alu chain" id="chain" aria-labelledby="chain-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="chain-title" class="h2">{L('Satu distrik, dari bijih ke logam', 'One district, from ore to metal')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('Eksplorasi, penambangan, jasa tambang, smelter, kawasan industri, dan bahan baterai berada dalam satu konsesi di tepi Teluk Matarape.', 'Exploration, mining, mining services, smelting, an industrial park and battery materials sit in one concession on Matarape Bay.')}</span></p>
+      </div>
+
+      <ol class="stair">
+        {[projects[1], projects[0], projects[2], projects[3], projects[4], projects[5]].map((p, i) => (
+          <li class={`stair__step tread--${p.status}`} style={`--i:${i}`}>
+            <a href={href(lang, `operations/${p.slug}/`)} class="stair__link">
+              <span class="stair__head">
+                <Status status={p.status} lang={lang} />
+              </span>
+              <span class="h3 stair__name">{p.name[lang]}</span>
+              <span class="stair__entity muted">{p.entity}</span>
+              <span class="stair__sum">{p.summary[lang]}</span>
+              <span class="stair__go stamp">{t.readMore} <Icon name="arrow" size={16} /></span>
+            </a>
+          </li>
+        ))}
+      </ol>
+      <p class="stair__key prov">
+        <span class="stamp">{L('Garis', 'Lines')}</span>
+        <span>{L('Garis tegas: beroperasi · putus-putus: konstruksi · titik: eksplorasi · tipis: direncanakan', 'Solid: operating · dashed: construction · dotted: exploration · hairline: planned')}</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ Site map -->
+  <Bench fill="var(--alu-hi)" shape="b" />
+  <section class="section ground-alu-hi" id="site" aria-labelledby="site-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="site-title" class="h2">{L('Di tepi Teluk Matarape', 'On Matarape Bay')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L(
+          `Desa ${company.site.village}, Kecamatan ${company.site.district}, ${company.site.regency.id}, ${company.site.province.id}. Dua jeti, Molore dan Lameruru, melayani tongkang 270 hingga 330 kaki.`,
+          `${company.site.village} Village, ${company.site.district} District, ${company.site.regency.en}, ${company.site.province.en}. Two jetties, Molore and Lameruru, serve 270 to 330 ft barges.`,
+        )}</span></p>
+      </div>
+      <SiteMap lang={lang} />
+    </div>
+  </section>
+
+  <!-- ============================================================ RKEF -->
+  <Bench fill="var(--net)" line="var(--net-3)" shape="c" />
+  <section class="section ground-net rkef" id="rkef" aria-labelledby="rkef-title">
+    <div class="wrap split split--wide-left">
+      <div>
+        <h2 id="rkef-title" class="h2 rkef__title">
+          {L('Dua lini RKEF.', 'Two RKEF lines.')}<br />
+          <span class="tnum">{L('130.740 ton', '130,740 tons')}</span> {L('NPI per tahun.', 'of NPI a year.')}<br />
+          {L('Mulai 2027.', 'From 2027.')}
+        </h2>
+        <ol class="flow" aria-label={L('Alur pengolahan', 'Process flow')}>
+          <li><span class="stamp">{L('Umpan', 'Feed')}</span><strong>{L('Bijih saprolit', 'Saprolite ore')}</strong><span class="muted tnum">1,65% Ni</span></li>
+          <li><span class="stamp">01</span><strong>Rotary kiln</strong><span class="muted">{L('Kalsinasi', 'Calcining')}</span></li>
+          <li><span class="stamp">02</span><strong>Electric furnace</strong><span class="muted">2 × 33 MVA</span></li>
+          <li><span class="stamp">{L('Produk', 'Product')}</span><strong>Nickel pig iron</strong><span class="muted tnum">10% Ni</span></li>
+        </ol>
+      </div>
+      <div class="rkef__facts">
+        <table class="ledger ledger--dark">
+          <caption class="visually-hidden">{L('Proyek RKEF Tahap I', 'RKEF project, Phase I')}</caption>
+          <tbody>
+            <tr><th scope="row">{L('Entitas', 'Entity')}</th><td>PT Stargate Mineral Asia · {L('Tahap I', 'Phase I')}</td></tr>
+            <tr><th scope="row">{L('Kontraktor EPC', 'EPC contractor')}</th><td>Sinosteel Equipment &amp; Engineering Co. Ltd.</td></tr>
+            <tr><th scope="row">{L('Perolehan nikel', 'Nickel recovery')}</th><td class="tnum">93%</td></tr>
+            <tr><th scope="row">{L('Pasokan bijih', 'Ore supply')}</th><td>PT Stargate Pasific Resources</td></tr>
+            <tr><th scope="row">{L('Listrik', 'Power')}</th><td>{L('Jaringan PLN Sulawesi; rencana PLTGU 450 MW', 'PLN Sulawesi grid; planned 450 MW PLTGU')}</td></tr>
+            <tr><th scope="row">{L('Lokasi', 'Location')}</th><td>Molore, Langgikima</td></tr>
+          </tbody>
+        </table>
+        <Prov label={t.source} text={L('aspire.id; jadwal produksi dari pemberitaan publik 2025', 'aspire.id; production schedule from public reporting, 2025')} />
+        <a class="btn btn--line" href={href(lang, 'operations/rkef/')}>{L('Proyek RKEF', 'The RKEF project')} <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Custody -->
+  <Bench fill="var(--laterite)" line="var(--ochre)" shape="a" />
+  <section class="section ground-laterite custody" id="custody" aria-labelledby="custody-title">
+    <div class="wrap split">
+      <div class="sticky-col custody__intro">
+        <h2 id="custody-title" class="h2">{L('Tanah yang dititipkan', 'Land held in trust')}</h2>
+        <p class="lead">{L(
+          'Setiap bench yang dibuka adalah lahan yang wajib dikembalikan. Lokasi tambang kami memiliki persemaian untuk rehabilitasi dan reforestasi.',
+          'Every bench we open is land we owe back. Our mine site runs a nursery for rehabilitation and reforestation.',
+        )}</p>
+        <figure class="custody__slot">
+          <TBD block title={L('Foto persemaian dan revegetasi', 'Nursery and revegetation photo')} note={L('Foto persemaian di lokasi tambang atau lereng bench yang telah direvegetasi.', 'A photo of the mine-site nursery or a revegetated bench slope.')} />
+        </figure>
+      </div>
+      <ul class="rule-list custody__list">
+        <li>
+          <h3 class="h3">{L('Lingkungan & reklamasi', 'Environment & reclamation')}</h3>
+          <p>{L('Pengelolaan air dan sedimen, reklamasi pascatambang, dan listrik dari jaringan PLN, bukan PLTU baru, untuk smelter kami.', 'Water and sediment management, post-mining reclamation, and grid power from PLN rather than a new coal plant for our smelter.')}</p>
+          <TBD note={L('Luas lahan direklamasi dan bibit tertanam per tahun.', 'Area reclaimed and seedlings planted per year.')} />
+          <a class="custody__go" href={href(lang, 'sustainability/')}>{L('Lingkungan & ESG', 'Environment & ESG')} <Icon name="arrow" size={18} /></a>
+        </li>
+        <li>
+          <h3 class="h3">{L('Keselamatan & kesehatan kerja', 'Occupational health & safety')}</h3>
+          <p>{L('Utamakan keselamatan: setiap orang pulang dengan selamat, di pit, di jalan angkut, di jeti, dan di smelter.', 'Safety first: everyone goes home safe, from the pit and the haul road to the jetty and the smelter.')}</p>
+          <TBD note={L('Jam kerja aman, LTIFR, dan status SMKP Minerba.', 'Safe man-hours, LTIFR and SMKP Minerba status.')} />
+          <a class="custody__go" href={href(lang, 'sustainability/health-safety/')}>{L('K3', 'Health & safety')} <Icon name="arrow" size={18} /></a>
+        </li>
+        <li>
+          <h3 class="h3">{L('Masyarakat Konawe Utara', 'North Konawe communities')}</h3>
+          <p>{L('Program pengembangan dan pemberdayaan masyarakat (PPM) bersama desa-desa di sekitar operasi.', 'Community development and empowerment (PPM) programmes with the villages around our operations.')}</p>
+          <TBD note={L('Program PPM, desa mitra, dan tenaga kerja lokal.', 'PPM programmes, partner villages and local workforce.')} />
+          <a class="custody__go" href={href(lang, 'sustainability/community/')}>{L('Masyarakat', 'Community')} <Icon name="arrow" size={18} /></a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================ News -->
+  <Bench fill="var(--alu)" shape="b" />
+  <section class="section ground-alu" id="news" aria-labelledby="news-title">
+    <div class="wrap">
+      <div class="news-head">
+        <h2 id="news-title" class="h2">{L('Berita', 'News')}</h2>
+        <a class="btn btn--line" href={href(lang, 'news/')}>{t.allNews} <Icon name="arrow" /></a>
+      </div>
+      <ol class="rule-list news-list">
+        {news.map((n) => (
+          <li>
+            <a href={href(lang, `news/${n.id.split('/')[1]}/`)} class="news-row">
+              <time class="stamp" datetime={n.data.date.toISOString().slice(0, 10)}>{formatDate(lang, n.data.date)}</time>
+              <span class="h3 news-row__title">{n.data.title}</span>
+              <span class="news-row__sum muted">{n.data.summary}</span>
+              <Icon name="arrow" size={20} />
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================================ Careers -->
+  <section class="join ground-net" id="join" aria-labelledby="join-title">
+    <div class="wrap join__grid">
+    <Image src={team} alt={L('Mosaik wajah tim ASPIRE', 'A mosaic of ASPIRE team members')} widths={[375, 750]} sizes="(min-width: 900px) 50vw, 100vw" class="join__img" />
+    <div class="join__panel">
+      <h2 id="join-title" class="h1">{L('Mari bergabung. Jadilah ASPIRE.', 'Join us. Be ASPIRE.')}</h2>
+      <p class="lead">{L('Apa pun latar pendidikan atau keahlian Anda, kami menyambut diri Anda yang sejati untuk bergabung.', 'Whatever your education background or expertise, we welcome your pure self to join us.')}</p>
+      <div class="actions">
+        <a class="btn btn--plate" href={company.careersPortal} rel="noopener" target="_blank">{L('Lihat lowongan', 'View openings')} <Icon name="external" /></a>
+        <a class="btn btn--line" href={href(lang, 'careers/')}>{L('Karier di ASPIRE', 'Careers at ASPIRE')}</a>
+      </div>
+    </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ---------------------------------------------------------------- Hero */
+  .hero {
+    position: relative;
+    background: var(--laterite);
+  }
+
+  .hero__photo {
+    position: relative;
+    height: clamp(340px, 54svh, 600px);
+    overflow: hidden;
+    background: var(--laterite-deep);
+  }
+
+  .hero__photo::after {
+    /* legibility under the header only */
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 150px;
+    background: linear-gradient(180deg, rgb(22 24 22 / 0.55), transparent);
+    pointer-events: none;
+  }
+
+  .hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 62%;
+  }
+
+  .hero__photo :global(.hero__prov) {
+    position: absolute;
+    right: var(--gutter);
+    bottom: calc(var(--step) * 2 + 1.25rem);
+    z-index: 2;
+    max-width: 22rem;
+    padding: 0.3rem 0.55rem;
+    border-radius: 3px;
+    background: rgb(22 24 22 / 0.62);
+    color: var(--on-net);
+    font-size: 0.75rem;
+  }
+
+  .hero__ground {
+    position: relative;
+    /* contain the benches' negative margin so they cut into the photo */
+    display: flow-root;
+    padding-bottom: var(--s-8);
+  }
+
+  .hero__benches {
+    display: block;
+    width: 100%;
+    height: calc(var(--step) * 2.5);
+    margin-top: calc(var(--step) * -2.5);
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero__grid {
+    display: grid;
+    gap: var(--s-7);
+    margin-top: calc(var(--step) * -1);
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero__text {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+  }
+
+  .hero__text .display span {
+    display: block;
+  }
+
+  .hero__text .display span:last-child {
+    color: var(--on-laterite);
+    -webkit-text-stroke: 0;
+  }
+
+  .hero__tags {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+  }
+
+  .hero__wire {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  }
+
+  .hero__wire :global(.tag) {
+    height: 100%;
+  }
+
+  @media (min-width: 1000px) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+      align-items: start;
+      /* headline starts on the upper bench, straddling the cut */
+      margin-top: calc(var(--step) * -2.5 + 0.5rem);
+    }
+
+    .hero__tags {
+      /* the wire runs along the lowest bench contour */
+      padding-top: calc(var(--step) * 2.45 - 0.5rem - 1px);
+    }
+
+    .hero__wire {
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      padding-top: var(--s-4);
+      border-top: 2px solid var(--net);
+    }
+
+    .hero__wire li {
+      position: relative;
+    }
+
+    /* string from the wire to each tag's hole */
+    .hero__wire li::before {
+      content: '';
+      position: absolute;
+      left: 1.1rem;
+      top: calc(var(--s-4) * -1);
+      height: calc(var(--s-4) + 50%);
+      border-left: 1.5px solid rgb(22 24 22 / 0.65);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero__wire li:nth-child(n + 3)::before {
+      display: none;
+    }
+
+    .hero__wire li:nth-child(even) {
+      transform: translateY(0.6rem);
+    }
+  }
+
+  /* ---------------------------------------------------------------- Stair */
+  .stair {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-5) var(--s-4);
+  }
+
+  .stair__step {
+    border-top: 3px solid var(--ink);
+  }
+
+  .tread--construction {
+    border-top-style: dashed;
+  }
+
+  .tread--exploration {
+    border-top-style: dotted;
+  }
+
+  .tread--planned {
+    border-top-width: 1px;
+  }
+
+  .stair__link {
+    display: grid;
+    gap: 0.45rem;
+    padding-top: var(--s-3);
+    text-decoration: none;
+    height: 100%;
+    align-content: start;
+  }
+
+  .stair__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.3rem 0.8rem;
+    color: var(--ink-2);
+  }
+
+  .stair__head :global(.status) {
+    color: var(--ink);
+  }
+
+  .stair__name {
+    transition: color 160ms;
+  }
+
+  .stair__entity {
+    font-size: 0.875rem;
+  }
+
+  .stair__sum {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .stair__go {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+  }
+
+  .stair__go :global(svg) {
+    transition: transform 200ms var(--ease-out);
+  }
+
+  .stair__link:hover .stair__name {
+    color: var(--leaf);
+  }
+
+  .stair__link:hover .stair__go :global(svg) {
+    transform: translateX(4px);
+  }
+
+  .stair__key {
+    margin-top: var(--s-6);
+  }
+
+  @media (min-width: 720px) {
+    .stair {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .stair__step:nth-child(even) {
+      margin-top: var(--step);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .stair {
+      grid-template-columns: repeat(6, 1fr);
+      padding-bottom: calc(var(--step) * 0.5);
+    }
+    /* each operation one bench lower than the last: exploration to battery */
+    .stair__step,
+    .stair__step:nth-child(even) {
+      margin-top: calc(var(--i) * var(--step) * 0.9);
+    }
+  }
+
+  /* ---------------------------------------------------------------- RKEF */
+  .rkef__title {
+    font-size: clamp(2.25rem, 1.4rem + 3.6vw, 4.5rem);
+    line-height: 0.92;
+  }
+
+  .rkef__title .tnum {
+    font-size: 1.12em;
+  }
+
+  .flow {
+    list-style: none;
+    margin: var(--s-7) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    counter-reset: f;
+  }
+
+  .flow li {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr auto;
+    gap: var(--s-4);
+    align-items: baseline;
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--net-3);
+  }
+
+  .flow li:last-child {
+    border-bottom: 1px solid var(--net-3);
+  }
+
+  .flow strong {
+    font-size: 1.15rem;
+    font-stretch: 82%;
+    font-weight: 720;
+  }
+
+  .flow .stamp {
+    color: var(--on-net-2);
+  }
+
+  @media (min-width: 720px) {
+    .flow {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .flow li {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+      padding: var(--s-4) var(--s-4) var(--s-4) 0;
+      border-top: 3px solid var(--on-net);
+      border-bottom: 0 !important;
+      position: relative;
+    }
+    .flow li + li {
+      padding-left: var(--s-4);
+    }
+    .flow li:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: -8px;
+      width: 9px;
+      height: 13px;
+      background: var(--on-net);
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+    }
+  }
+
+  .rkef__facts {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+    justify-items: start;
+  }
+
+  .ledger--dark th,
+  .ledger--dark td {
+    border-bottom-color: var(--net-3);
+  }
+
+  .ledger--dark th[scope='row'] {
+    color: var(--on-net-2);
+  }
+
+  /* ---------------------------------------------------------------- Custody */
+  .custody__intro {
+    min-width: 0;
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .custody__slot {
+    margin: 0;
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    min-height: 14rem;
+    padding: var(--s-5);
+    border: 1.5px dashed var(--ochre-pale);
+    border-radius: 3px;
+  }
+
+  .custody__list > li {
+    display: grid;
+    gap: var(--s-3);
+    justify-items: start;
+    padding-block: var(--s-6);
+  }
+
+  .custody__list p {
+    max-width: 52ch;
+  }
+
+  .custody__go {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 650;
+    font-stretch: 90%;
+  }
+
+  .custody :global(.tbd) {
+    color: var(--laterite-night);
+  }
+
+  /* ---------------------------------------------------------------- News */
+  .news-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--s-4);
+    margin-bottom: var(--s-6);
+  }
+
+  .news-row {
+    display: grid;
+    gap: 0.35rem var(--s-6);
+    text-decoration: none;
+    padding-block: var(--s-2);
+  }
+
+  .news-row > :global(svg) {
+    display: none;
+  }
+
+  .news-row:hover .news-row__title {
+    color: var(--leaf);
+  }
+
+  @media (min-width: 900px) {
+    .news-row {
+      grid-template-columns: 11rem minmax(0, 1fr) minmax(0, 1fr) auto;
+      align-items: baseline;
+    }
+    .news-row > :global(svg) {
+      display: block;
+      align-self: center;
+      transition: transform 200ms var(--ease-out);
+    }
+    .news-row:hover > :global(svg) {
+      transform: translateX(4px);
+    }
+  }
+
+  /* ---------------------------------------------------------------- Join */
+  .join {
+    margin-top: var(--s-8);
+    padding-block: var(--s-8);
+  }
+
+  .join__grid {
+    display: grid;
+    gap: var(--s-7);
+    align-items: center;
+  }
+
+  .join__img {
+    width: 100%;
+    max-width: 750px;
+    height: auto;
+    border-radius: 3px;
+  }
+
+  .join__panel {
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+  }
+
+  @media (min-width: 900px) {
+    .join__grid {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    }
+  }
+</style>

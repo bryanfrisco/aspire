@@ -1,0 +1,10 @@
+---
+// Provenance line: every figure and photo carries where it came from.
+interface Props {
+  label: string;
+  text: string;
+  class?: string;
+}
+const { label, text, class: cls } = Astro.props;
+---
+<p class:list={['prov', cls]}><span class="stamp">{label}</span><span>{text}</span></p>

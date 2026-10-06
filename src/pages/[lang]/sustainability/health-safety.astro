@@ -1,0 +1,162 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import SubNav from '../../../components/SubNav.astro';
+import Bench from '../../../components/Bench.astro';
+import TBD from '../../../components/TBD.astro';
+import MetricTable from '../../../components/MetricTable.astro';
+import Icon from '../../../components/Icon.astro';
+import excavator from '../../../assets/photos/excavator-loading.jpg';
+import { href, langPaths, type Lang } from '../../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const sus = L('Keberlanjutan', 'Sustainability');
+const title = L('Keselamatan & kesehatan kerja', 'Occupational health & safety');
+
+const risks = [
+  { k: L('Jalan angkut', 'Haul roads'), v: L('Interaksi kendaraan ringan dan alat berat, debu, dan jarak pandang.', 'Light vehicle and heavy equipment interaction, dust and visibility.') },
+  { k: L('Stabilitas lereng', 'Slope stability'), v: L('Geometri bench, curah hujan tinggi, dan drainase.', 'Bench geometry, heavy rainfall and drainage.') },
+  { k: L('Alat berat', 'Heavy equipment'), v: L('Area buta, pemuatan, dan perawatan.', 'Blind spots, loading and maintenance.') },
+  { k: L('Jeti & tongkang', 'Jetty & barges'), v: L('Pemuatan, tali tambat, dan bekerja di atas air.', 'Loading, mooring lines and working over water.') },
+  { k: L('Konstruksi smelter', 'Smelter construction'), v: L('Bekerja di ketinggian, pengangkatan, dan energi listrik.', 'Work at height, lifting and electrical energy.') },
+  { k: L('Kesehatan kerja', 'Occupational health'), v: L('Panas, kelelahan, kebisingan, dan debu.', 'Heat, fatigue, noise and dust.') },
+];
+
+const rail = [
+  { id: 'commitment', label: L('Komitmen', 'Commitment') },
+  { id: 'system', label: 'SMKP Minerba' },
+  { id: 'risks', label: L('Risiko kritis', 'Critical risks') },
+  { id: 'performance', label: L('Kinerja', 'Performance') },
+];
+---
+<Base lang={lang} title={title} description={L('Keselamatan dan kesehatan kerja (K3) di ASPIRE Stargate: komitmen, SMKP Minerba, pengendalian risiko kritis, dan kinerja keselamatan.', 'Occupational health and safety at ASPIRE Stargate: commitment, SMKP Minerba, critical risk controls and safety performance.')} rail={rail}>
+  <PageHead
+    lang={lang}
+    title={L('Utamakan keselamatan', 'Safety comes first')}
+    summary={L('Setiap orang yang bekerja di pit, jalan angkut, jeti, dan smelter kami harus pulang dengan selamat, setiap hari.', 'Everyone who works in our pits, on our haul roads, at our jetties and at our smelter must go home safe, every day.')}
+    crumbs={[{ label: sus, path: 'sustainability/' }, { label: 'K3' }]}
+    image={{ src: excavator, alt: L('Pengawas berhelm dan berompi keselamatan mengamati pemuatan bijih', 'A supervisor in hard hat and high-visibility shirt watching ore loading'), credit: L('Blok Selatan · arsip ASPIRE', 'South Block · ASPIRE archive') }}
+  >
+    <SubNav lang={lang} parent="sustainability/" />
+  </PageHead>
+
+  <section class="section ground-alu" id="commitment">
+    <div class="wrap split">
+      <h2 class="h2">{L('Komitmen K3', 'Our safety commitment')}</h2>
+      <div class="prose commit">
+        <p class="lead">{L('Tidak ada target produksi yang lebih penting daripada keselamatan. Setiap pekerja dan kontraktor berhak dan wajib menghentikan pekerjaan yang tidak aman.', 'No production target matters more than safety. Every worker and contractor has the right and the duty to stop unsafe work.')}</p>
+        <TBD block title={L('Kebijakan K3 resmi', 'Official HSE policy')} note={L('Pernyataan di atas adalah draf. Ganti dengan Kebijakan K3 & Lingkungan yang ditandatangani Direksi dan unggah PDF-nya ke pustaka laporan.', 'The statement above is a draft. Replace with the HSE policy signed by the Board of Directors and upload the PDF to the reports library.')} />
+      </div>
+    </div>
+  </section>
+
+  <Bench fill="var(--net)" line="var(--net-3)" shape="a" />
+  <section class="section ground-net" id="system">
+    <div class="wrap split">
+      <div class="section-head">
+        <h2 class="h2">SMKP Minerba</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('Sistem Manajemen Keselamatan Pertambangan Mineral dan Batubara, wajib bagi pemegang IUP di Indonesia.', 'Indonesia’s mandatory Mining Safety Management System for mineral and coal licence holders.')}</span></p>
+      </div>
+      <ul class="rule-list sys">
+        <li>
+          <h3 class="h3">{L('Kepala Teknik Tambang (KTT)', 'Mine Manager (KTT)')}</h3>
+          <p>{L('Penanggung jawab keselamatan operasional di setiap IUP.', 'Accountable for operational safety on each IUP.')}</p>
+          <TBD note={L('Nama KTT / struktur organisasi K3', 'KTT name / HSE organisation')} />
+        </li>
+        <li>
+          <h3 class="h3">{L('Keselamatan kontraktor', 'Contractor safety')}</h3>
+          <p>{L('PT RSL sebagai kontraktor tambang dan Sinosteel sebagai kontraktor EPC bekerja di bawah sistem keselamatan yang sama.', 'PT RSL as mining contractor and Sinosteel as EPC contractor work under the same safety system.')}</p>
+          <TBD note={L('Konfirmasi mekanisme CSMS untuk kontraktor', 'Confirm the contractor safety management (CSMS) process')} />
+        </li>
+        <li>
+          <h3 class="h3">{L('Tanggap darurat', 'Emergency response')}</h3>
+          <p>{L('Kesiapsiagaan untuk kecelakaan, kebakaran, banjir, dan insiden di laut.', 'Preparedness for injuries, fire, flooding and incidents at sea.')}</p>
+          <TBD note={L('Fasilitas klinik lokasi, ambulans, dan jadwal latihan darurat', 'Site clinic, ambulance and emergency drill schedule')} />
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu-hi)" shape="c" />
+  <section class="section ground-alu-hi" id="risks">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Risiko kritis yang kami kelola', 'Critical risks we manage')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('Bahaya utama tambang nikel laterit dan smelter.', 'The principal hazards of a laterite nickel mine and smelter.')}</span></p>
+      </div>
+      <ol class="risks">
+        {risks.map((r) => (
+          <li>
+            <h3 class="h3">{r.k}</h3>
+            <p>{r.v}</p>
+          </li>
+        ))}
+      </ol>
+      <TBD note={L('Kontrol kritis per risiko dan program verifikasinya.', 'Critical controls for each risk and how they are verified.')} />
+    </div>
+  </section>
+
+  <Bench fill="var(--net)" line="var(--net-3)" shape="b" />
+  <section class="section ground-net" id="performance">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Kinerja keselamatan', 'Safety performance')}</h2>
+      </div>
+      <MetricTable
+        dark
+        caption={L('Seluruh karyawan dan kontraktor', 'All employees and contractors')}
+        metricLabel={L('Indikator', 'Indicator')}
+        unitLabel={L('Satuan', 'Unit')}
+        years={['2024', '2025']}
+        rows={[
+          { label: L('Jam kerja', 'Hours worked'), unit: L('jam-orang', 'man-hours') },
+          { label: L('Jam kerja aman berturut-turut', 'Consecutive safe hours'), unit: L('jam-orang', 'man-hours') },
+          { label: 'Fatality', unit: L('kasus', 'cases') },
+          { label: L('Cedera hilang waktu kerja (LTI)', 'Lost time injuries (LTI)'), unit: L('kasus', 'cases') },
+          { label: 'LTIFR', unit: L('per 1 juta jam', 'per 1M hours') },
+          { label: 'TRIFR', unit: L('per 1 juta jam', 'per 1M hours') },
+          { label: L('Jam pelatihan K3', 'HSE training hours'), unit: L('jam', 'hours') },
+        ]}
+        note={L('Isi data kinerja K3 tahunan yang telah diverifikasi.', 'Fill verified annual safety performance data.')}
+      />
+      <p class="perf__link"><a class="btn btn--plate" href={href(lang, 'investors/#reports')}>{L('Laporan K3', 'Safety reports')} <Icon name="arrow" /></a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .commit {
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .sys > li {
+    display: grid;
+    gap: var(--s-2);
+    justify-items: start;
+    padding-block: var(--s-5);
+  }
+
+  .risks {
+    list-style: none;
+    margin: 0 0 var(--s-6);
+    padding: 0;
+    display: grid;
+    gap: var(--s-5) var(--s-6);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  }
+
+  .risks li {
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+    padding: var(--s-4) 0 0;
+    border-top: 3px solid var(--ink);
+  }
+
+  .perf__link {
+    margin-top: var(--s-6);
+  }
+</style>

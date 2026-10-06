@@ -1,0 +1,227 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Bench from '../../components/Bench.astro';
+import TBD from '../../components/TBD.astro';
+import Icon from '../../components/Icon.astro';
+import { company } from '../../data/company';
+import { href, langPaths, ui, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const title = L('Investor', 'Investors');
+
+const reports = (await getCollection('reports')).sort((a, b) => b.data.year - a.data.year || a.data.title.en.localeCompare(b.data.title.en));
+const typeLabel: Record<string, string> = {
+  annual: L('Laporan tahunan', 'Annual report'),
+  sustainability: L('Keberlanjutan', 'Sustainability'),
+  safety: 'K3',
+  governance: L('Tata kelola', 'Governance'),
+  environment: L('Lingkungan', 'Environment'),
+  other: L('Lainnya', 'Other'),
+};
+const types = [...new Set(reports.map((r) => r.data.type))];
+---
+<Base lang={lang} title={L('Investor & laporan', 'Investors & reports')} description={L('Informasi perusahaan, struktur kepemilikan, dan pustaka laporan ASPIRE Stargate: laporan tahunan, keberlanjutan, K3, dan kebijakan.', 'ASPIRE Stargate company information, ownership and reports library: annual, sustainability and safety reports and policies.')}>
+  <PageHead
+    lang={lang}
+    title={L('Investor & laporan', 'Investors & reports')}
+    summary={L('ASPIRE adalah perusahaan tertutup dalam grup Astra melalui PT United Tractors Tbk. Laporan dan kebijakan kami tersedia di bawah ini.', 'ASPIRE is a private company in the Astra group through PT United Tractors Tbk. Our reports and policies are available below.')}
+    crumbs={[{ label: title }]}
+  />
+
+  <section class="section ground-alu">
+    <div class="wrap split">
+      <h2 class="h2">{L('Sekilas perusahaan', 'Company at a glance')}</h2>
+      <table class="ledger">
+        <tbody>
+          <tr><th scope="row">{L('Nama perusahaan', 'Legal name')}</th><td>{company.legalName}</td></tr>
+          <tr><th scope="row">{L('Merek', 'Brand')}</th><td>{company.brand}</td></tr>
+          <tr><th scope="row">{L('Pemegang saham', 'Shareholder')}</th><td>PT Danusa Tambang Nusantara {L('(anak usaha PT United Tractors Tbk, grup Astra)', '(subsidiary of PT United Tractors Tbk, Astra group)')}</td></tr>
+          <tr><th scope="row">{L('Status', 'Status')}</th><td>{L('Perseroan tertutup, tidak tercatat di bursa', 'Private limited company, not listed')}</td></tr>
+          <tr><th scope="row">{L('Bidang usaha', 'Business')}</th><td>{L('Perusahaan induk pertambangan dan pengolahan nikel', 'Holding company for nickel mining and processing')}</td></tr>
+          <tr><th scope="row">{L('Wilayah operasi', 'Operations')}</th><td>{L('Kecamatan Langgikima, Konawe Utara, Sulawesi Tenggara', 'Langgikima District, North Konawe, Southeast Sulawesi')}</td></tr>
+          <tr><th scope="row">{L('Kantor pusat', 'Head office')}</th><td>{company.hq.building}, {company.hq.street}, {company.hq.city}</td></tr>
+          <tr><th scope="row">{L('Auditor independen', 'Independent auditor')}</th><td><TBD note={L('Nama KAP', 'Audit firm')} /></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu-hi)" shape="b" />
+  <section class="section ground-alu-hi" id="reports">
+    <div class="wrap">
+      <div class="lib-head">
+        <h2 class="h2">{L('Pustaka laporan', 'Reports library')}</h2>
+        <div class="filters" role="group" aria-label={L('Saring menurut jenis', 'Filter by type')} hidden data-filters>
+          <button type="button" class="chip" aria-pressed="true" data-filter="all">{L('Semua', 'All')}</button>
+          {types.map((ty) => <button type="button" class="chip" aria-pressed="false" data-filter={ty}>{typeLabel[ty]}</button>)}
+        </div>
+      </div>
+      <ul class="lib" data-lib>
+        {reports.map((r) => (
+          <li data-type={r.data.type}>
+            <span class="lib__year tnum">{r.data.year}</span>
+            <span class="lib__main">
+              <span class="h3 lib__title">{r.data.title[lang]}</span>
+              <span class="stamp muted">{typeLabel[r.data.type]}</span>
+            </span>
+            <span class="lib__act">
+              {r.data.file ? (
+                <a class="btn btn--line" href={r.data.file} download>
+                  {t.download}{r.data.sizeKb && <span class="muted"> · PDF {Math.round(r.data.sizeKb / 100) / 10} MB</span>} <Icon name="download" />
+                </a>
+              ) : (
+                <TBD note={t.notYet} />
+              )}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p class="lib__note muted">{L('Untuk menerbitkan laporan: simpan PDF di public/reports/ dan isi kolom "file" di src/content/reports.json.', 'To publish a report: put the PDF in public/reports/ and set its "file" field in src/content/reports.json.')}</p>
+    </div>
+  </section>
+
+  <Bench fill="var(--net)" line="var(--net-3)" shape="c" />
+  <section class="section ground-net">
+    <div class="wrap split">
+      <h2 class="h2">{L('Kontak investor & media', 'Investor & media contact')}</h2>
+      <div class="ir">
+        <p class="lead">{L('Untuk pertanyaan investor, pemberi pinjaman, mitra, dan media:', 'For investor, lender, partner and media enquiries:')}</p>
+        <p><a class="ir__mail" href={`mailto:${company.email}`}><Icon name="mail" /> {company.email}</a></p>
+        <TBD note={L('Alamat email khusus hubungan investor/media dan nama narahubung.', 'Dedicated investor/media relations email and contact name.')} />
+        <div class="actions"><a class="btn btn--plate" href={href(lang, 'news/')}>{L('Berita terbaru', 'Latest news')} <Icon name="arrow" /></a></div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-filters]');
+  const items = Array.from(document.querySelectorAll<HTMLElement>('[data-lib] > li'));
+  if (bar) {
+    bar.hidden = false;
+    const buttons = Array.from(bar.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+    bar.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-filter]');
+      if (!btn) return;
+      const f = btn.dataset.filter;
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      items.forEach((li) => (li.hidden = f !== 'all' && li.dataset.type !== f));
+    });
+  }
+</script>
+
+<style>
+  .lib-head {
+    display: grid;
+    gap: var(--s-4);
+    margin-bottom: var(--s-6);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+
+  .filters[hidden] {
+    display: none;
+  }
+
+  .chip {
+    min-height: 40px;
+    padding: 0.45rem 0.85rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.75rem;
+    font-stretch: 118%;
+    font-weight: 650;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 160ms, color 160ms, border-color 160ms;
+  }
+
+  .chip:hover {
+    border-color: var(--leaf);
+    color: var(--leaf);
+  }
+
+  .chip[aria-pressed='true'] {
+    background: var(--leaf);
+    border-color: var(--leaf);
+    color: #fff;
+  }
+
+  .lib {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 2px solid var(--ink);
+  }
+
+  .lib > li {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: var(--s-3) var(--s-5);
+    align-items: center;
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--alu-line);
+  }
+
+  .lib > li[hidden] {
+    display: none;
+  }
+
+  .lib__year {
+    font-size: 1.75rem;
+    font-family: var(--display);
+    font-weight: 840;
+    color: var(--laterite);
+  }
+
+  .lib__main {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .lib__act {
+    grid-column: 2;
+  }
+
+  @media (min-width: 760px) {
+    .lib > li {
+      grid-template-columns: 5.5rem 1fr auto;
+    }
+    .lib__act {
+      grid-column: 3;
+    }
+  }
+
+  .lib__note {
+    margin-top: var(--s-5);
+    font-size: 0.875rem;
+  }
+
+  .ir {
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+  }
+
+  .ir__mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: clamp(1.1rem, 1rem + 0.6vw, 1.5rem);
+    font-weight: 650;
+    font-stretch: 85%;
+  }
+</style>

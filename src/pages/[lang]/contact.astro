@@ -1,0 +1,326 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Bench from '../../components/Bench.astro';
+import TBD from '../../components/TBD.astro';
+import Icon from '../../components/Icon.astro';
+import { company } from '../../data/company';
+import { href, langPaths, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const title = L('Kontak', 'Contact');
+
+// Set PUBLIC_FORM_ENDPOINT (e.g. a Formspree or Cloudflare Worker URL) at build time
+// to post the form there. Without it the form opens the visitor's email app.
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined;
+
+const routes = [
+  { k: L('Bisnis & penjualan', 'Business & sales'), v: company.email, href: `mailto:${company.email}`, icon: 'mail' as const },
+  { k: L('Karier', 'Careers'), v: company.careersEmail, href: `mailto:${company.careersEmail}`, icon: 'user' as const },
+  { k: L('Media & investor', 'Media & investors'), v: company.email, href: `mailto:${company.email}`, icon: 'mail' as const, tbd: L('Email khusus', 'Dedicated email') },
+  { k: L('Pelaporan pelanggaran', 'Whistleblowing'), v: L('Sistem WBS', 'WBS system'), href: href(lang, 'governance/#wbs'), icon: 'shield' as const },
+  { k: L('Masyarakat', 'Community'), v: L('Saluran pengaduan', 'Grievance channel'), href: href(lang, 'sustainability/community/#grievance'), icon: 'user' as const },
+];
+---
+<Base lang={lang} title={title} description={L('Hubungi ASPIRE Stargate: kantor pusat Pacific Century Place, SCBD Jakarta, dan lokasi operasi di Konawe Utara, Sulawesi Tenggara.', 'Contact ASPIRE Stargate: head office at Pacific Century Place, SCBD Jakarta, and operations in North Konawe, Southeast Sulawesi.')}>
+  <PageHead
+    lang={lang}
+    title={L('Hubungi kami', 'Contact us')}
+    summary={L('Kantor pusat di SCBD Jakarta; operasi di Molore, Konawe Utara.', 'Head office in SCBD, Jakarta; operations at Molore, North Konawe.')}
+    crumbs={[{ label: title }]}
+  />
+
+  <section class="section ground-alu">
+    <div class="wrap places">
+      <div class="place">
+        <h2 class="h2">Jakarta</h2>
+        <p class="stamp muted">{L('Kantor pusat', 'Head office')}</p>
+        <address>
+          {company.legalName}<br />
+          {company.hq.building}<br />
+          {company.hq.street}<br />
+          {company.hq.city}, {company.hq.country[lang]}
+        </address>
+        <p class="place__links">
+          <a href={`mailto:${company.email}`}><Icon name="mail" size={18} /> {company.email}</a>
+          <span><Icon name="phone" size={18} /> <TBD note={L('Nomor telepon', 'Phone number')} /></span>
+          <a href={company.hq.maps} rel="noopener" target="_blank"><Icon name="pin" size={18} /> {L('Buka di Google Maps', 'Open in Google Maps')}</a>
+        </p>
+      </div>
+      <div class="place">
+        <h2 class="h2">Konawe Utara</h2>
+        <p class="stamp muted">{L('Lokasi operasi', 'Operations')}</p>
+        <address>
+          {L('Desa Molore, Kecamatan Langgikima', 'Molore Village, Langgikima District')}<br />
+          {company.site.regency[lang]}<br />
+          {company.site.province[lang]}, Indonesia
+        </address>
+        <TBD note={L('Alamat lengkap kantor lapangan dan nomor telepon lokasi.', 'Full site office address and site phone number.')} />
+      </div>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu-hi)" shape="b" />
+  <section class="section ground-alu-hi">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Siapa yang perlu Anda hubungi', 'Who to contact')}</h2>
+      </div>
+      <ul class="routes">
+        {routes.map((r) => (
+          <li>
+            <span class="stamp muted">{r.k}</span>
+            <a href={r.href}><Icon name={r.icon} size={18} /> {r.v}</a>
+            {r.tbd && <TBD note={r.tbd} />}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Bench fill="var(--laterite)" shape="c" />
+  <section class="section ground-laterite" id="enquiry">
+    <div class="wrap split">
+      <div class="section-head">
+        <h2 class="h2">{L('Kirim pertanyaan', 'Send an enquiry')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('Kami akan meneruskan pesan Anda ke tim yang tepat.', 'We will route your message to the right team.')}</span></p>
+      </div>
+      <form class="form" method="post" action={endpoint ?? `mailto:${company.email}`} enctype={endpoint ? undefined : 'text/plain'} data-form data-mailto={company.email} data-endpoint={endpoint ? 'true' : undefined}>
+        <div class="field">
+          <label for="f-topic">{L('Topik', 'Topic')}</label>
+          <select id="f-topic" name="topic" required>
+            <option value="">{L('Pilih topik', 'Choose a topic')}</option>
+            <option>{L('Penjualan bijih / produk', 'Ore / product sales')}</option>
+            <option>{L('Kemitraan & kawasan industri', 'Partnerships & industrial park')}</option>
+            <option>{L('Pemasok & vendor', 'Suppliers & vendors')}</option>
+            <option>{L('Media', 'Media')}</option>
+            <option>{L('Masyarakat', 'Community')}</option>
+            <option>{L('Lainnya', 'Other')}</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-name">{L('Nama', 'Name')}</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="f-org">{L('Perusahaan / instansi', 'Company / organisation')} <span class="opt">{L('(opsional)', '(optional)')}</span></label>
+            <input id="f-org" name="organisation" type="text" autocomplete="organization" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required />
+        </div>
+        <div class="field">
+          <label for="f-msg">{L('Pesan', 'Message')}</label>
+          <textarea id="f-msg" name="message" rows="6" required></textarea>
+        </div>
+        <p class="consent">{L('Data Anda hanya digunakan untuk menanggapi pertanyaan ini.', 'Your details are used only to answer this enquiry.')} <a href={href(lang, 'privacy/')}>{L('Kebijakan privasi', 'Privacy policy')}</a></p>
+        <div class="actions">
+          <button class="btn btn--plate" type="submit">{L('Kirim', 'Send')} <Icon name="arrow" /></button>
+        </div>
+        <p class="form__status" role="status" aria-live="polite" data-status></p>
+        {!endpoint && <TBD note={L('Formulir saat ini membuka aplikasi email pengunjung. Setel PUBLIC_FORM_ENDPOINT untuk pengiriman langsung.', 'The form currently opens the visitor’s email app. Set PUBLIC_FORM_ENDPOINT for direct submission.')} />}
+      </form>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-form]');
+  const status = form?.querySelector<HTMLElement>('[data-status]');
+  const isId = document.documentElement.lang.startsWith('id');
+  form?.addEventListener('submit', async (e) => {
+    if (!form.checkValidity()) return;
+    e.preventDefault();
+    const data = new FormData(form);
+    if (form.dataset.endpoint) {
+      if (status) status.textContent = isId ? 'Mengirim…' : 'Sending…';
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        if (status) status.textContent = isId ? 'Terima kasih. Pesan Anda telah terkirim.' : 'Thank you. Your message has been sent.';
+      } catch {
+        if (status) status.textContent = isId ? `Pesan gagal terkirim. Silakan email ${form.dataset.mailto}.` : `The message could not be sent. Please email ${form.dataset.mailto}.`;
+      }
+      return;
+    }
+    const subject = `[aspire.id] ${data.get('topic')} · ${data.get('name')}`;
+    const body = `${data.get('message')}\n\n${data.get('name')}\n${data.get('organisation') || ''}\n${data.get('email')}`;
+    window.location.href = `mailto:${form.dataset.mailto}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    if (status) status.textContent = isId ? 'Aplikasi email Anda dibuka dengan pesan yang sudah terisi.' : 'Your email app has opened with the message filled in.';
+  });
+</script>
+
+<style>
+  .places {
+    display: grid;
+    gap: var(--s-8);
+  }
+
+  @media (min-width: 900px) {
+    .places {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .place {
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+    align-content: start;
+    padding-top: var(--s-4);
+    border-top: 3px solid var(--ink);
+  }
+
+  address {
+    font-style: normal;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  .place__links {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .place__links > * {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .routes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-5) var(--s-6);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  }
+
+  .routes li {
+    display: grid;
+    gap: 0.4rem;
+    justify-items: start;
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--alu-line);
+  }
+
+  .routes a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 650;
+    word-break: break-word;
+  }
+
+  /* ---------------- Form */
+  .form {
+    display: grid;
+    gap: var(--s-4);
+    padding: var(--s-6);
+    border-radius: 6px;
+    background: var(--alu-hi);
+    color: var(--ink);
+    box-shadow: 0 30px 50px -36px rgb(0 0 0 / 0.7);
+    --focus: var(--leaf);
+  }
+
+  .field-row {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  @media (min-width: 640px) {
+    .field-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .field {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  label {
+    font-size: 0.8125rem;
+    font-stretch: 112%;
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .opt {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--ink-2);
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.7rem 0.8rem;
+    border: 1.5px solid var(--alu-line);
+    border-radius: 4px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 1rem;
+    transition: border-color 160ms;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  input:hover,
+  select:hover,
+  textarea:hover {
+    border-color: var(--ink-2);
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid var(--leaf);
+    outline-offset: 1px;
+    border-color: var(--leaf);
+  }
+
+  input:user-invalid,
+  select:user-invalid,
+  textarea:user-invalid {
+    border-color: var(--laterite);
+  }
+
+  .consent {
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .form .btn--plate {
+    --btn-bg: var(--net);
+    --btn-fg: var(--on-net);
+  }
+
+  .form .btn--plate:hover {
+    --btn-bg: var(--leaf);
+    --btn-fg: #fff;
+  }
+
+  .form__status:empty {
+    display: none;
+  }
+
+  .form__status {
+    font-weight: 600;
+  }
+</style>

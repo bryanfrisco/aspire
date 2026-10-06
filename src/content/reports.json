@@ -1,0 +1,13 @@
+[
+  { "id": "ar-2025", "year": 2025, "type": "annual", "title": { "id": "Laporan Tahunan 2025", "en": "Annual Report 2025" }, "file": null, "sizeKb": null },
+  { "id": "sr-2025", "year": 2025, "type": "sustainability", "title": { "id": "Laporan Keberlanjutan 2025", "en": "Sustainability Report 2025" }, "file": null, "sizeKb": null },
+  { "id": "k3-2025", "year": 2025, "type": "safety", "title": { "id": "Ringkasan Kinerja K3 2025", "en": "Health & Safety Performance Summary 2025" }, "file": null, "sizeKb": null },
+  { "id": "env-2025", "year": 2025, "type": "environment", "title": { "id": "Laporan Pemantauan Lingkungan (RKL-RPL) 2025", "en": "Environmental Monitoring Report (RKL-RPL) 2025" }, "file": null, "sizeKb": null },
+  { "id": "ar-2024", "year": 2024, "type": "annual", "title": { "id": "Laporan Tahunan 2024", "en": "Annual Report 2024" }, "file": null, "sizeKb": null },
+  { "id": "sr-2024", "year": 2024, "type": "sustainability", "title": { "id": "Laporan Keberlanjutan 2024", "en": "Sustainability Report 2024" }, "file": null, "sizeKb": null },
+  { "id": "coc", "year": 2026, "type": "governance", "title": { "id": "Pedoman Perilaku (Code of Conduct)", "en": "Code of Conduct" }, "file": null, "sizeKb": null },
+  { "id": "abc-policy", "year": 2026, "type": "governance", "title": { "id": "Kebijakan Antikorupsi & Antisuap", "en": "Anti-Corruption & Anti-Bribery Policy" }, "file": null, "sizeKb": null },
+  { "id": "wbs-policy", "year": 2026, "type": "governance", "title": { "id": "Kebijakan Sistem Pelaporan Pelanggaran (WBS)", "en": "Whistleblowing System Policy" }, "file": null, "sizeKb": null },
+  { "id": "hse-policy", "year": 2026, "type": "safety", "title": { "id": "Kebijakan K3 & Lingkungan", "en": "Health, Safety & Environment Policy" }, "file": null, "sizeKb": null },
+  { "id": "company-profile", "year": 2026, "type": "other", "title": { "id": "Profil Perusahaan", "en": "Company Profile" }, "file": null, "sizeKb": null }
+]

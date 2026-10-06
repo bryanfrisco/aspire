@@ -1,0 +1,157 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import Icon from '../../../components/Icon.astro';
+import { company } from '../../../data/company';
+import { href, langPaths, formatDate, type Lang } from '../../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const title = L('Berita', 'News');
+const cat: Record<string, string> = {
+  company: L('Perusahaan', 'Company'),
+  operations: L('Operasi', 'Operations'),
+  sustainability: L('Keberlanjutan', 'Sustainability'),
+  community: L('Masyarakat', 'Community'),
+  safety: 'K3',
+};
+
+const posts = (await getCollection('news', (e) => e.id.startsWith(`${lang}/`) && !e.data.draft)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const years = [...new Set(posts.map((p) => p.data.date.getFullYear()))];
+---
+<Base lang={lang} title={title} description={L('Berita dan siaran pers ASPIRE Stargate tentang operasi, smelter RKEF, keberlanjutan, dan masyarakat di Konawe Utara.', 'ASPIRE Stargate news and press releases on operations, the RKEF smelter, sustainability and communities in North Konawe.')}>
+  <PageHead
+    lang={lang}
+    title={L('Berita & media', 'News & media')}
+    summary={L('Kabar dari Konawe Utara dan Jakarta: operasi, smelter, keberlanjutan, dan perusahaan.', 'Updates from North Konawe and Jakarta: operations, the smelter, sustainability and the company.')}
+    crumbs={[{ label: title }]}
+  />
+
+  <section class="section ground-alu">
+    <div class="wrap">
+      {years.map((y) => (
+        <div class="year">
+          <h2 class="year__label tnum">{y}</h2>
+          <ol class="rule-list posts">
+            {posts.filter((p) => p.data.date.getFullYear() === y).map((p) => (
+              <li>
+                <a class="post" href={href(lang, `news/${p.id.split('/')[1]}/`)}>
+                  <span class="post__meta stamp">
+                    <time datetime={p.data.date.toISOString().slice(0, 10)}>{formatDate(lang, p.data.date)}</time>
+                    <span class="muted">{cat[p.data.category]}</span>
+                  </span>
+                  <span class="post__text">
+                    <span class="h2 post__title">{p.data.title}</span>
+                    <span class="post__sum">{p.data.summary}</span>
+                  </span>
+                  <Icon name="arrow" size={22} />
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+
+      <aside class="media">
+        <p class="stamp">{L('Pertanyaan media', 'Media enquiries')}</p>
+        <a href={`mailto:${company.email}`}><Icon name="mail" size={18} /> {company.email}</a>
+        <p class="muted">{L('Berita ditulis dalam folder src/content/news/id dan src/content/news/en dengan nama file yang sama.', 'News is written in src/content/news/id and src/content/news/en using the same file name.')}</p>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .year {
+    display: grid;
+    gap: var(--s-4);
+    margin-bottom: var(--s-8);
+  }
+
+  @media (min-width: 900px) {
+    .year {
+      grid-template-columns: 9rem 1fr;
+    }
+  }
+
+  .year__label {
+    font-size: clamp(2.5rem, 2rem + 2vw, 4rem);
+    font-family: var(--display);
+    font-weight: 860;
+    line-height: 0.85;
+    color: var(--laterite);
+  }
+
+  .posts > li {
+    padding: 0;
+  }
+
+  .post {
+    display: grid;
+    gap: var(--s-3) var(--s-6);
+    padding: var(--s-5) 0;
+    text-decoration: none;
+  }
+
+  .post__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+  }
+
+  .post__text {
+    display: grid;
+    gap: var(--s-3);
+    max-width: 52rem;
+  }
+
+  .post__title {
+    font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+    transition: color 160ms;
+  }
+
+  .post > :global(svg) {
+    display: none;
+  }
+
+  .post:hover .post__title {
+    color: var(--leaf);
+  }
+
+  @media (min-width: 900px) {
+    .post {
+      grid-template-columns: 12rem 1fr auto;
+      align-items: start;
+    }
+    .post > :global(svg) {
+      display: block;
+      margin-top: 0.4rem;
+      transition: transform 200ms var(--ease-out);
+    }
+    .post:hover > :global(svg) {
+      transform: translateX(4px);
+    }
+  }
+
+  .media {
+    display: grid;
+    gap: var(--s-2);
+    justify-items: start;
+    padding-top: var(--s-4);
+    border-top: 3px solid var(--ink);
+    max-width: 40rem;
+  }
+
+  .media a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 650;
+  }
+
+  .media p.muted {
+    font-size: 0.875rem;
+  }
+</style>

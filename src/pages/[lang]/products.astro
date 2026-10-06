@@ -1,0 +1,292 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Bench from '../../components/Bench.astro';
+import Status from '../../components/Status.astro';
+import TBD from '../../components/TBD.astro';
+import Prov from '../../components/Prov.astro';
+import Icon from '../../components/Icon.astro';
+import excavator from '../../assets/photos/excavator-loading.jpg';
+import { href, langPaths, ui, type Lang, type Status as S } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const n = (s: string) => (lang === 'id' ? s.replace('.', ',') : s);
+const title = L('Produk', 'Products');
+
+type Product = {
+  id: string;
+  name: string;
+  status: S;
+  when: string;
+  use: string;
+  body: string;
+  rows?: { k: string; v: string }[];
+  source?: string;
+  tbd: string;
+};
+
+const products: Product[] = [
+  {
+    id: 'saprolite',
+    name: L('Bijih nikel saprolit', 'Saprolite nickel ore'),
+    status: 'operating',
+    when: L('Tersedia', 'Available'),
+    use: L('Umpan pirometalurgi (RKEF / feronikel / NPI)', 'Pyrometallurgical feed (RKEF / ferronickel / NPI)'),
+    body: L('Lapisan saprolit yang kaya magnesium dengan kadar nikel lebih tinggi, ditambang dari IUP Selatan untuk smelter dalam negeri dan untuk smelter RKEF kami sendiri.', 'The magnesium-rich saprolite horizon with higher nickel grades, mined from the South IUP for domestic smelters and for our own RKEF smelter.'),
+    rows: [
+      { k: L('Cadangan', 'Reserves'), v: L('23.178.777 ton', '23,178,777 tons') },
+      { k: 'Ni', v: `${n('1.7')}%` },
+      { k: 'Fe', v: `${n('26.5')}%` },
+      { k: 'SiO₂', v: `${n('22.6')}%` },
+      { k: 'MgO', v: `${n('8.2')}%` },
+      { k: 'Al₂O₃', v: `${n('5.9')}%` },
+    ],
+    source: L('Pernyataan cadangan Stargate berbasis model JORC (RungePincockMinarco, 2014)', 'Stargate reserve statement based on JORC modelling (RungePincockMinarco, 2014)'),
+    tbd: L('Spesifikasi jual: kadar air (MC), rasio SiO₂/MgO, ukuran, dan toleransi kadar.', 'Sales specification: moisture content (MC), SiO₂/MgO ratio, size and grade tolerances.'),
+  },
+  {
+    id: 'limonite',
+    name: L('Bijih nikel limonit', 'Limonite nickel ore'),
+    status: 'operating',
+    when: L('Tersedia', 'Available'),
+    use: L('Umpan hidrometalurgi (HPAL)', 'Hydrometallurgical feed (HPAL)'),
+    body: L('Lapisan limonit yang kaya besi di atas saprolit, diklasifikasikan untuk teknologi hidrometalurgi. Termasuk dalam rencana tambahan 4 juta ton bijih kadar menengah dan rendah per tahun.', 'The iron-rich limonite horizon above the saprolite, classified for hydrometallurgical technology. Part of the planned additional 4 million tons a year of medium- and low-grade ore.'),
+    rows: [
+      { k: L('Cadangan', 'Reserves'), v: L('92.187.796 ton', '92,187,796 tons') },
+      { k: 'Ni', v: `${n('1.0')}%` },
+      { k: 'Fe', v: `${n('37.4')}%` },
+      { k: 'SiO₂', v: `${n('12.2')}%` },
+      { k: 'MgO', v: `${n('3.5')}%` },
+      { k: 'Al₂O₃', v: `${n('9.2')}%` },
+    ],
+    source: L('Pernyataan cadangan Stargate berbasis model JORC (RungePincockMinarco, 2014)', 'Stargate reserve statement based on JORC modelling (RungePincockMinarco, 2014)'),
+    tbd: L('Spesifikasi jual limonit dan pembeli sasaran.', 'Limonite sales specification and target buyers.'),
+  },
+  {
+    id: 'npi',
+    name: 'Nickel pig iron (NPI)',
+    status: 'construction',
+    when: L('Mulai 2027', 'From 2027'),
+    use: L('Bahan baku baja tahan karat', 'Stainless steel feedstock'),
+    body: L('Diproduksi oleh smelter RKEF 2x33 MVA PT Stargate Mineral Asia di Molore dari bijih saprolit kami sendiri.', 'Produced by PT Stargate Mineral Asia’s 2x33 MVA RKEF smelter at Molore from our own saprolite ore.'),
+    rows: [
+      { k: L('Kapasitas desain', 'Design capacity'), v: L('130.740 t/tahun', '130,740 t/year') },
+      { k: L('Kandungan Ni', 'Ni content'), v: '10%' },
+      { k: L('Perolehan nikel', 'Nickel recovery'), v: '93%' },
+      { k: L('Umpan', 'Feed'), v: `${n('1.65')}% Ni` },
+    ],
+    source: 'aspire.id',
+    tbd: L('Spesifikasi produk NPI (C, Si, P, S, bentuk, ukuran) setelah commissioning.', 'NPI product specification (C, Si, P, S, form, size) after commissioning.'),
+  },
+  {
+    id: 'battery',
+    name: L('Bahan baterai nikel', 'Nickel battery materials'),
+    status: 'planned',
+    when: L('Tahap II & III', 'Phase II & III'),
+    use: L('Rantai pasok baterai kendaraan listrik', 'Electric-vehicle battery supply chain'),
+    body: L('Ni-matte dan nikel sulfat (NiSO4) pada Tahap II; hidrometalurgi HPAL 20 hingga 30 ktpa sedang dipertimbangkan untuk Tahap III, dengan listrik dari jaringan PLN dan investasi surya serta angin.', 'Ni-matte and nickel sulphate (NiSO4) in Phase II; 20 to 30 ktpa HPAL hydrometallurgy is being considered for Phase III, powered by the PLN grid and solar and wind investments.'),
+    tbd: L('Jadwal, kapasitas, dan mitra teknologi Tahap II dan III.', 'Phase II and III schedule, capacity and technology partners.'),
+  },
+];
+---
+<Base lang={lang} title={title} description={L('Produk nikel ASPIRE Stargate: bijih saprolit dan limonit dari Konawe Utara, nickel pig iron mulai 2027, dan rencana bahan baterai nikel.', 'ASPIRE Stargate nickel products: saprolite and limonite ore from North Konawe, nickel pig iron from 2027 and planned nickel battery materials.')}>
+  <PageHead
+    lang={lang}
+    title={L('Nikel, lapis demi lapis', 'Nickel, layer by layer')}
+    summary={L('Bijih saprolit dan limonit dari Blok Selatan saat ini; nickel pig iron mulai 2027; bahan baterai pada tahap berikutnya.', 'Saprolite and limonite ore from the South Block today; nickel pig iron from 2027; battery materials in the next phases.')}
+    crumbs={[{ label: title }]}
+    image={{ src: excavator, alt: L('Pemuatan bijih laterit di pit Blok Selatan', 'Loading laterite ore at a South Block pit'), credit: L('Blok Selatan · arsip ASPIRE', 'South Block · ASPIRE archive') }}
+  />
+
+  <section class="section ground-alu">
+    <div class="wrap split">
+      <figure class="profile" aria-labelledby="profile-cap">
+        <div class="profile__col" aria-hidden="true">
+          <span class="profile__layer profile__layer--top">{L('Tanah pucuk', 'Topsoil')}</span>
+          <span class="profile__layer profile__layer--lim">{L('Limonit', 'Limonite')}<em>~{n('1.0')}% Ni · Fe {n('37.4')}%</em></span>
+          <span class="profile__layer profile__layer--sap">{L('Saprolit', 'Saprolite')}<em>~{n('1.7')}% Ni · MgO {n('8.2')}%</em></span>
+          <span class="profile__layer profile__layer--bed">{L('Batuan dasar', 'Bedrock')}</span>
+        </div>
+        <figcaption id="profile-cap" class="prov"><span class="stamp">{L('Skema', 'Schematic')}</span><span>{L('Profil laterit nikel. Ketebalan lapisan tidak berskala; kadar adalah rata-rata cadangan.', 'Nickel laterite profile. Layer thickness not to scale; grades are reserve averages.')}</span></figcaption>
+      </figure>
+      <div class="prose">
+        <h2 class="h2">{L('Dua bijih, dua jalur pengolahan', 'Two ores, two processing routes')}</h2>
+        <p class="lead">{L('Deposit laterit Konawe Utara terbentuk dari pelapukan batuan ultrabasa. Lapisan atas yang kaya besi (limonit) cocok untuk hidrometalurgi; lapisan bawah yang kaya magnesium (saprolit) cocok untuk smelter RKEF.', 'North Konawe’s laterite deposits formed from weathered ultramafic rock. The iron-rich upper layer (limonite) suits hydrometallurgy; the magnesium-rich lower layer (saprolite) suits RKEF smelting.')}</p>
+        <p>{L('Total sumber daya JORC Blok Selatan: 146,1 juta ton dengan kadar 1,19% Ni, 33,14% Fe, dan 0,09% Co.', 'Total JORC resources at the South Block: 146.1 million tons grading 1.19% Ni, 33.14% Fe and 0.09% Co.')}</p>
+        <Prov label={t.source} text={L('Laporan Sumber Daya Mineral JORC oleh RungePincockMinarco, Mei 2014', 'JORC Mineral Resources Report by RungePincockMinarco, May 2014')} />
+      </div>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu-hi)" shape="b" />
+  <section class="section ground-alu-hi">
+    <div class="wrap">
+      <ol class="prod">
+        {products.map((p) => (
+          <li class={`prod__row tread--${p.status}`} id={p.id}>
+            <div class="prod__head">
+              <h2 class="h2 prod__name">{p.name}</h2>
+              <p class="prod__when"><Status status={p.status} lang={lang} /> <span class="muted">· {p.when}</span></p>
+            </div>
+            <div class="prod__body">
+              <p>{p.body}</p>
+              <p class="prod__use"><strong>{L('Penggunaan', 'Use')}:</strong> {p.use}</p>
+              {p.rows && (
+                <table class="ledger prod__table">
+                  <tbody>
+                    {p.rows.map((r) => <tr><th scope="row">{r.k}</th><td class="num tnum">{r.v}</td></tr>)}
+                  </tbody>
+                </table>
+              )}
+              {p.source && <Prov label={t.source} text={p.source} />}
+              <TBD note={p.tbd} />
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <Bench fill="var(--laterite)" shape="c" />
+  <section class="section ground-laterite">
+    <div class="wrap split">
+      <h2 class="h2">{L('Pengapalan dari Teluk Matarape', 'Shipping from Matarape Bay')}</h2>
+      <div class="ship">
+        <p class="lead">{L('Bijih dimuat ke tongkang di Jeti Molore (4 slot) dan Jeti Lameruru (2 slot), dengan kapasitas muat gabungan hingga 20.000 ton per hari, untuk smelter dalam negeri.', 'Ore is loaded onto barges at Molore Jetty (4 slots) and Lameruru Jetty (2 slots), with combined loading capacity of up to 20,000 tons a day, for domestic smelters.')}</p>
+        <p>{L('Sampel disiapkan dan dianalisis di laboratorium lokasi tambang.', 'Samples are prepared and analysed at the mine-site laboratory.')}</p>
+        <TBD note={L('Syarat penjualan (FOB tongkang), surveyor independen, dan prosedur sampling.', 'Sales terms (FOB barge), independent surveyor and sampling procedure.')} />
+        <div class="actions">
+          <a class="btn btn--plate" href={href(lang, 'contact/#enquiry')}>{L('Ajukan pertanyaan penjualan', 'Make a sales enquiry')} <Icon name="arrow" /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .profile {
+    margin: 0;
+    display: grid;
+    gap: var(--s-3);
+    max-width: 26rem;
+  }
+
+  .profile__col {
+    display: grid;
+    grid-template-rows: 0.5fr 2.2fr 1.8fr 1fr;
+    min-height: 440px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--alu-line), 0 24px 40px -30px rgb(22 24 22 / 0.7);
+  }
+
+  .profile__layer {
+    display: grid;
+    align-content: center;
+    gap: 0.2rem;
+    padding: 0.6rem 1rem;
+    font-size: 1.05rem;
+    font-family: var(--display);
+    font-weight: 780;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .profile__layer em {
+    font-style: normal;
+    font-size: 0.75rem;
+    font-stretch: 118%;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: none;
+  }
+
+  .profile__layer--top {
+    background: #4c3a26;
+    color: var(--on-laterite);
+  }
+
+  .profile__layer--lim {
+    background:
+      radial-gradient(circle at 20% 30%, rgb(255 255 255 / 0.06) 0 2px, transparent 3px) 0 0 / 18px 18px,
+      var(--laterite);
+    color: var(--on-laterite);
+  }
+
+  .profile__layer--sap {
+    background:
+      radial-gradient(circle at 60% 50%, rgb(0 0 0 / 0.08) 0 3px, transparent 4px) 0 0 / 22px 22px,
+      #b98f4e;
+    color: var(--net);
+  }
+
+  .profile__layer--bed {
+    background:
+      repeating-linear-gradient(115deg, rgb(255 255 255 / 0.05) 0 2px, transparent 2px 14px),
+      #4a5148;
+    color: var(--on-net);
+  }
+
+  .prod {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-8);
+  }
+
+  .prod__row {
+    display: grid;
+    gap: var(--s-5) var(--s-8);
+    padding-top: var(--s-4);
+    border-top: 3px solid var(--ink);
+  }
+
+  .tread--construction {
+    border-top-style: dashed;
+  }
+  .tread--planned {
+    border-top-width: 1px;
+  }
+
+  @media (min-width: 900px) {
+    .prod__row {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    }
+  }
+
+  .prod__head {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+    justify-items: start;
+  }
+
+  .prod__body {
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+    max-width: 44rem;
+  }
+
+  .prod__when {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  .prod__table {
+    max-width: 26rem;
+  }
+
+  .ship {
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+  }
+</style>

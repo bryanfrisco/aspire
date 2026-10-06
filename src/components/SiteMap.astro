@@ -1,0 +1,345 @@
+---
+// Schematic site map of the Stargate concession on Matarape Bay.
+// Illustrative only: geometry is NOT surveyed. Replace with WIUP coordinates.
+import Status from './Status.astro';
+import TBD from './TBD.astro';
+import Icon from './Icon.astro';
+import { projects } from '../data/projects';
+import { href, type Lang } from '../i18n';
+interface Props {
+  lang: Lang;
+  compact?: boolean;
+}
+const { lang, compact = false } = Astro.props;
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+
+// Deterministic wobbly contour rings around two hills.
+function ring(cx: number, cy: number, rx: number, ry: number, seed: number) {
+  const n = 28;
+  const pts: string[] = [];
+  for (let i = 0; i <= n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    const w = 1 + 0.07 * Math.sin(a * 3 + seed) + 0.04 * Math.sin(a * 5 + seed * 2);
+    pts.push(`${(cx + Math.cos(a) * rx * w).toFixed(1)} ${(cy + Math.sin(a) * ry * w).toFixed(1)}`);
+  }
+  return `M${pts.join('L')}Z`;
+}
+const contours = [
+  ...[1, 0.78, 0.56, 0.34].map((k, i) => ring(780, 190, 230 * k, 150 * k, i + 1)),
+  ...[1, 0.7, 0.42].map((k, i) => ring(880, 400, 120 * k, 90 * k, i + 7)),
+  ...[1, 0.6].map((k, i) => ring(110, 200, 110 * k, 80 * k, i + 3)),
+];
+const coast = 'M0 505C90 500 150 530 210 545C270 560 300 520 350 535C410 552 430 600 500 585C570 570 610 548 690 560C780 574 860 600 1000 590L1000 640L0 640Z';
+---
+<div class:list={['sitemap', compact && 'sitemap--compact']} data-sitemap>
+  <div class="sitemap__canvas">
+    <svg viewBox="0 0 1000 640" role="img" aria-labelledby="sitemap-title" preserveAspectRatio="xMidYMid slice">
+      <title id="sitemap-title">{L('Skema lokasi operasi ASPIRE Stargate di Teluk Matarape, Konawe Utara', 'Schematic of ASPIRE Stargate operations on Matarape Bay, North Konawe')}</title>
+      <defs>
+        <pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="9" height="9" fill="var(--limonite)" opacity="0.28"></rect>
+          <line x1="0" y1="0" x2="0" y2="9" stroke="var(--laterite)" stroke-width="3"></line>
+        </pattern>
+        <pattern id="hatch-n" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+          <rect width="9" height="9" fill="var(--ochre)" opacity="0.22"></rect>
+          <line x1="0" y1="0" x2="0" y2="9" stroke="var(--ochre)" stroke-width="2"></line>
+        </pattern>
+      </defs>
+      <rect width="1000" height="640" fill="var(--alu-lo)"></rect>
+      <g fill="none" stroke="var(--alu-line)" stroke-width="1.2">
+        {contours.map((d) => <path d={d}></path>)}
+      </g>
+      <path d={coast} fill="var(--sea)"></path>
+      <path d={coast} fill="none" stroke="var(--alu-hi)" stroke-width="1.5" opacity="0.5" transform="translate(0 -7)"></path>
+
+      <!-- IUP blocks -->
+      <path d="M380 150L520 120L585 175L560 255L440 268L372 215Z" fill="url(#hatch-n)" stroke="var(--ochre)" stroke-width="2.5"></path>
+      <path d="M455 330L600 300L705 352L720 455L640 505L520 490L470 430Z" fill="url(#hatch)" stroke="var(--laterite)" stroke-width="2.5"></path>
+      <!-- Industrial park zone -->
+      <path d="M150 330L360 320L400 430L345 505L170 500Z" fill="var(--alu-hi)" fill-opacity="0.55" stroke="var(--net)" stroke-width="2" stroke-dasharray="10 7"></path>
+      <!-- Haul roads -->
+      <g fill="none" stroke="var(--net)" stroke-width="2.5" stroke-dasharray="3 6" stroke-linecap="round">
+        <path d="M520 470C470 500 380 505 305 527"></path>
+        <path d="M600 490C590 520 575 540 562 560"></path>
+        <path d="M500 268C510 300 515 315 520 330"></path>
+      </g>
+      <!-- Jetties -->
+      <g fill="var(--net)">
+        <rect x="292" y="522" width="16" height="34" rx="2"></rect>
+        <rect x="555" y="557" width="14" height="30" rx="2"></rect>
+      </g>
+      <g class="sitemap__labels" fill="var(--ink)">
+        <text x="300" y="578" text-anchor="middle">Molore</text>
+        <text x="563" y="608" text-anchor="middle">Lameruru</text>
+        <text x="420" y="628" text-anchor="middle" fill="var(--alu-hi)" class="italic">{L('Teluk Matarape', 'Matarape Bay')}</text>
+        <text x="478" y="105" text-anchor="middle">{L('IUP Utara · 461,1 ha', 'North IUP · 461.1 ha')}</text>
+        <text x="640" y="290" text-anchor="middle">{L('IUP Selatan · 1.213,2 ha', 'South IUP · 1,213.2 ha')}</text>
+        <text x="265" y="312" text-anchor="middle">{L('Kawasan industri', 'Industrial park')}</text>
+      </g>
+      <!-- North arrow -->
+      <g transform="translate(940 60)" fill="var(--net)">
+        <path d="M0 -26L9 6L0 0L-9 6Z"></path>
+        <text y="26" text-anchor="middle">{L('U', 'N')}</text>
+      </g>
+    </svg>
+
+    {projects.filter((p) => p.map).map((p) => (
+      <button
+        class="sitemap__pin"
+        type="button"
+        style={`left:${(p.map!.x / 1000) * 100}%;top:${(p.map!.y / 640) * 100}%`}
+        data-pin={p.slug}
+        aria-controls={`site-${p.slug}`}
+        aria-pressed="false"
+      >
+        <span class="visually-hidden">{p.name[lang]}</span>
+        <span aria-hidden="true">{p.no}</span>
+      </button>
+    ))}
+  </div>
+
+  <div class="sitemap__side">
+    <ol class="sitemap__list">
+      {projects.map((p) => (
+        <li id={`site-${p.slug}`} data-item={p.slug}>
+          <a href={href(lang, `operations/${p.slug}/`)} class="sitemap__item">
+            <span class="sitemap__no stamp">{p.no}</span>
+            <span class="sitemap__body">
+              <span class="sitemap__name">{p.name[lang]}</span>
+              <span class="sitemap__meta"><span class="stamp muted">{p.code}</span><Status status={p.status} lang={lang} /></span>
+              <span class="sitemap__sum">{p.summary[lang]}</span>
+            </span>
+            <Icon name="arrow" size={18} />
+          </a>
+        </li>
+      ))}
+    </ol>
+    <div class="sitemap__legend">
+      <p class="stamp">{L('Legenda', 'Legend')}</p>
+      <ul>
+        <li><span class="sw sw--south"></span>{L('IUP Selatan (SPR)', 'South IUP (SPR)')}</li>
+        <li><span class="sw sw--north"></span>{L('IUP Utara (S2)', 'North IUP (S2)')}</li>
+        <li><span class="sw sw--park"></span>{L('Kawasan industri (SMA)', 'Industrial park (SMA)')}</li>
+        <li><span class="sw sw--road"></span>{L('Jalan angkut', 'Haul road')}</li>
+      </ul>
+      <TBD note={L('Skema ilustratif, tidak berskala. Ganti dengan batas WIUP dan koordinat resmi.', 'Illustrative schematic, not to scale. Replace with official WIUP boundaries and coordinates.')} />
+    </div>
+  </div>
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-sitemap]')) {
+    root.classList.add('is-live');
+    const pins = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-pin]'));
+    const items = Array.from(root.querySelectorAll<HTMLElement>('[data-item]'));
+    const select = (slug: string) => {
+      pins.forEach((p) => p.setAttribute('aria-pressed', String(p.dataset.pin === slug)));
+      items.forEach((i) => i.toggleAttribute('data-active', i.dataset.item === slug));
+    };
+    pins.forEach((p) => p.addEventListener('click', () => select(p.dataset.pin!)));
+    items.forEach((i) => {
+      i.addEventListener('mouseenter', () => select(i.dataset.item!));
+      i.addEventListener('focusin', () => select(i.dataset.item!));
+    });
+    select(pins[0]?.dataset.pin ?? '');
+  }
+</script>
+
+<style>
+  .sitemap {
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  @media (min-width: 1000px) {
+    .sitemap {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: start;
+    }
+  }
+
+  .sitemap__canvas {
+    position: relative;
+    aspect-ratio: 1000 / 640;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--alu-line), 0 24px 40px -28px rgb(22 24 22 / 0.6);
+  }
+
+  .sitemap__canvas svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .sitemap__labels text,
+  .sitemap__canvas svg > g > text {
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 650;
+    font-stretch: 110%;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .sitemap__pin {
+    position: absolute;
+    translate: -50% -50%;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .sitemap__pin span[aria-hidden] {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--alu-hi);
+    border: 2px solid var(--net);
+    color: var(--net);
+    font-size: 0.75rem;
+    font-stretch: 115%;
+    font-weight: 760;
+    box-shadow: 0 6px 12px -6px rgb(0 0 0 / 0.7);
+    transition: background-color 200ms var(--ease-out), color 200ms, transform 240ms var(--ease-out);
+  }
+
+  .sitemap__pin:hover span[aria-hidden] {
+    transform: scale(1.08);
+  }
+
+  .sitemap__pin[aria-pressed='true'] span[aria-hidden] {
+    background: var(--leaf);
+    border-color: var(--leaf);
+    color: #fff;
+    transform: scale(1.12);
+  }
+
+  .sitemap__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--alu-line);
+  }
+
+  .sitemap__list li {
+    border-bottom: 1px solid var(--alu-line);
+  }
+
+  .sitemap__item {
+    display: grid;
+    grid-template-columns: 2.2rem 1fr auto;
+    gap: var(--s-3);
+    align-items: start;
+    padding: 0.8rem 0.4rem 0.8rem 0;
+    text-decoration: none;
+    transition: background-color 200ms;
+  }
+
+  .sitemap__item > svg {
+    margin-top: 0.2rem;
+    opacity: 0.4;
+    transition: opacity 200ms, transform 200ms var(--ease-out);
+  }
+
+  .sitemap__no {
+    padding-top: 0.25rem;
+  }
+
+  .sitemap__body {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .sitemap__name {
+    font-size: 1.1rem;
+    font-stretch: 80%;
+    font-weight: 760;
+    line-height: 1.15;
+  }
+
+  .sitemap__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.8rem;
+    align-items: center;
+  }
+
+  .sitemap__sum {
+    font-size: 0.9rem;
+    color: var(--ink-2);
+    line-height: 1.45;
+  }
+
+  .is-live .sitemap__list li:not([data-active]) .sitemap__sum {
+    display: none;
+  }
+
+  .sitemap__list li[data-active] .sitemap__name,
+  .sitemap__item:hover .sitemap__name {
+    color: var(--leaf);
+  }
+
+  .sitemap__list li[data-active] .sitemap__item > svg,
+  .sitemap__item:hover > svg {
+    opacity: 1;
+    transform: translateX(3px);
+  }
+
+  .sitemap__legend {
+    display: grid;
+    gap: var(--s-3);
+    margin-top: var(--s-5);
+  }
+
+  .sitemap__legend ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.875rem;
+  }
+
+  .sitemap__legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .sw {
+    width: 1.1rem;
+    height: 0.8rem;
+    border-radius: 2px;
+  }
+
+  .sw--south {
+    background: repeating-linear-gradient(45deg, var(--laterite) 0 3px, color-mix(in srgb, var(--limonite) 35%, var(--alu-lo)) 3px 6px);
+  }
+
+  .sw--north {
+    background: repeating-linear-gradient(-45deg, var(--ochre) 0 2px, color-mix(in srgb, var(--ochre) 25%, var(--alu-lo)) 2px 6px);
+  }
+
+  .sw--park {
+    border: 2px dashed var(--net);
+    background: var(--alu-hi);
+  }
+
+  .sw--road {
+    height: 0;
+    border-top: 3px dotted var(--net);
+  }
+
+  .sitemap--compact .sitemap__legend ul {
+    display: none;
+  }
+</style>

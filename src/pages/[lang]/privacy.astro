@@ -1,0 +1,44 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import TBD from '../../components/TBD.astro';
+import { company } from '../../data/company';
+import { langPaths, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const title = L('Kebijakan privasi', 'Privacy policy');
+---
+<Base lang={lang} title={title} description={L('Bagaimana ASPIRE Stargate mengelola data pribadi pengunjung situs sesuai UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi.', 'How ASPIRE Stargate handles website visitors’ personal data under Indonesia’s Personal Data Protection Law No. 27 of 2022.')}>
+  <PageHead lang={lang} title={title} summary={L('Bagaimana kami mengelola data pribadi yang Anda berikan melalui situs ini.', 'How we handle the personal data you give us through this website.')} crumbs={[{ label: title }]} />
+  <section class="section ground-alu">
+    <div class="wrap legal">
+      <TBD block title={L('Draf, perlu tinjauan hukum', 'Draft, requires legal review')} note={L('Teks ini adalah draf awal dan harus ditinjau oleh tim hukum sebelum dipublikasikan.', 'This text is an initial draft and must be reviewed by legal counsel before publication.')} />
+      <div class="prose">
+        <h2>{L('Pengendali data', 'Data controller')}</h2>
+        <p>{company.legalName}, {company.hq.building}, {company.hq.street}, {company.hq.city}. Email: <a href={`mailto:${company.email}`}>{company.email}</a>.</p>
+        <h2>{L('Data yang kami kumpulkan', 'Data we collect')}</h2>
+        <p>{L('Situs ini tidak menggunakan cookie pelacak atau analitik pihak ketiga. Kami hanya memproses data yang Anda kirimkan secara sukarela melalui formulir kontak atau email: nama, organisasi, alamat email, dan isi pesan. Lamaran kerja diproses melalui portal karier kami.', 'This website uses no tracking cookies or third-party analytics. We only process data you choose to send through the contact form or by email: name, organisation, email address and message. Job applications are processed through our careers portal.')}</p>
+        <h2>{L('Tujuan dan dasar pemrosesan', 'Purpose and legal basis')}</h2>
+        <p>{L('Data digunakan semata-mata untuk menanggapi pertanyaan Anda, berdasarkan persetujuan Anda sesuai Undang-Undang No. 27 Tahun 2022 tentang Pelindungan Data Pribadi.', 'Data is used solely to respond to your enquiry, on the basis of your consent under Law No. 27 of 2022 on Personal Data Protection.')}</p>
+        <h2>{L('Penyimpanan', 'Retention')}</h2>
+        <p><TBD note={L('Jangka waktu penyimpanan data pertanyaan', 'Retention period for enquiry data')} /></p>
+        <h2>{L('Hak Anda', 'Your rights')}</h2>
+        <p>{L('Anda berhak mengakses, memperbaiki, menghapus, dan menarik persetujuan atas data pribadi Anda. Hubungi kami melalui email di atas.', 'You have the right to access, correct and delete your personal data, and to withdraw consent. Contact us at the email above.')}</p>
+        <h2>{L('Perubahan', 'Changes')}</h2>
+        <p>{L('Kebijakan ini dapat diperbarui. Versi terbaru selalu tersedia di halaman ini.', 'This policy may be updated. The latest version is always on this page.')}</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .legal .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+</style>

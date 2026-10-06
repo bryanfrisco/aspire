@@ -1,0 +1,19 @@
+---
+// Visible content placeholder. Every instance renders the literal "[TO UPDATE]"
+// so outstanding content can be found by search (npm run todo).
+interface Props {
+  note: string;
+  title?: string;
+  block?: boolean;
+}
+const { note, title, block } = Astro.props;
+---
+{block ? (
+  <div class="tbd tbd--block" role="note">
+    <span class="tbd__mark">[TO UPDATE]</span>
+    {title && <strong>{title}</strong>}
+    <span>{note}</span>
+  </div>
+) : (
+  <span class="tbd" role="note"><span class="tbd__mark">[TO UPDATE]</span><span>{note}</span></span>
+)}

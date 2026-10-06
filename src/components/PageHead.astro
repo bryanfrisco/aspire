@@ -1,0 +1,116 @@
+---
+import { Image } from 'astro:assets';
+import Bench from './Bench.astro';
+import { ui, href, type Lang } from '../i18n';
+interface Props {
+  lang: Lang;
+  title: string;
+  summary: string;
+  crumbs?: { label: string; path?: string }[];
+  image?: { src: ImageMetadata; alt: string; credit?: string };
+  next?: string; // ground of the section below
+  shape?: 'a' | 'b' | 'c';
+}
+const { lang, title, summary, crumbs = [], image, next = 'var(--alu)', shape = 'a' } = Astro.props;
+const t = ui[lang];
+---
+<section class="page-head ground-laterite">
+  <div class:list={['wrap page-head__grid', image && 'has-image']}>
+    <div class="page-head__text">
+      <nav aria-label={t.breadcrumb}>
+        <ol class="crumbs stamp">
+          <li><a href={href(lang)}>{t.home}</a></li>
+          {crumbs.map((c, i) => (
+            <li>{c.path && i < crumbs.length - 1 ? <a href={href(lang, c.path)}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>
+          ))}
+        </ol>
+      </nav>
+      <h1 class="h1">{title}</h1>
+      <p class="fast"><span class="stamp" aria-hidden="true">—</span><span class="page-head__summary">{summary}</span></p>
+      <slot />
+    </div>
+    {image && (
+      <figure class="page-head__fig">
+        <Image src={image.src} alt={image.alt} widths={[480, 760, 1100]} sizes="(min-width: 900px) 45vw, 100vw" class="cut" loading="eager" />
+        {image.credit && <figcaption class="prov"><span class="stamp">{t.photo}</span> {image.credit}</figcaption>}
+      </figure>
+    )}
+  </div>
+  <Bench fill={next} shape={shape} />
+</section>
+
+<style>
+  .page-head {
+    position: relative;
+    padding-top: clamp(8rem, 14vw, 10.5rem);
+    background:
+      radial-gradient(120% 90% at 85% 0%, rgb(255 255 255 / 0.06), transparent 60%),
+      var(--laterite);
+  }
+
+  .page-head__grid {
+    display: grid;
+    gap: var(--s-6) var(--s-8);
+    padding-bottom: calc(var(--step) * 3 + var(--s-6));
+  }
+
+  @media (min-width: 900px) {
+    .page-head__grid.has-image {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      align-items: end;
+    }
+  }
+
+  .page-head__text {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+  }
+
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: var(--on-laterite-2);
+  }
+
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 0.4rem;
+    opacity: 0.6;
+  }
+
+  .crumbs a {
+    text-decoration: none;
+  }
+
+  .crumbs a:hover {
+    text-decoration: underline;
+  }
+
+  .page-head h1 {
+    max-width: 14ch;
+  }
+
+  .page-head__summary {
+    font-size: clamp(1.05rem, 1rem + 0.35vw, 1.25rem);
+    line-height: 1.45;
+  }
+
+  .page-head__fig {
+    margin: 0;
+  }
+
+  .page-head__fig img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .page-head__fig .prov {
+    margin-top: var(--s-2);
+  }
+</style>

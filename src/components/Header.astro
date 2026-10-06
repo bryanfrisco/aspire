@@ -1,0 +1,261 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/aspire-stargate-astra.png';
+import Icon from './Icon.astro';
+import { nav, ui, href, switchLang, type Lang } from '../i18n';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+const path = Astro.url.pathname;
+const other: Lang = lang === 'id' ? 'en' : 'id';
+const isCurrent = (p: string) => path.startsWith(href(lang, p));
+---
+<header class="site-header on-dark">
+  <div class="site-header__bar wrap">
+    <a class="logo-tag" href={href(lang)} aria-label={`ASPIRE Stargate, ${t.home}`}>
+      <Image src={logo} alt="" width={104} height={113} loading="eager" fetchpriority="high" />
+    </a>
+
+    <nav class="nav-desk" aria-label="Main">
+      <ul>
+        {nav.map((item) => (
+          <li>
+            <a href={href(lang, item.path)} aria-current={isCurrent(item.path) ? 'page' : undefined}>{item.label[lang]}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="site-header__util">
+      <a class="lang" href={switchLang(path, other)} hreflang={other} lang={other}>
+        <Icon name="globe" size={16} />
+        <span>{other.toUpperCase()}</span>
+        <span class="visually-hidden">{t.otherLang}</span>
+      </a>
+      <a class="btn btn--plate contact-btn" href={href(lang, 'contact/')}>{t.contact}</a>
+
+      <details class="menu">
+        <summary class="btn btn--plate">
+          <Icon name="menu" size={18} />
+          <span>{t.menu}</span>
+        </summary>
+        <div class="menu__panel ground-net">
+          <nav aria-label="Main">
+            <ul class="menu__list">
+              <li><a href={href(lang)}>{t.home}</a></li>
+              {nav.map((item) => (
+                <li>
+                  <a href={href(lang, item.path)} aria-current={isCurrent(item.path) ? 'page' : undefined}>{item.label[lang]}</a>
+                  {item.children && (
+                    <ul>
+                      {item.children.slice(1).map((c) => (
+                        <li><a href={href(lang, c.path)}>{c.label[lang]}</a></li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+              <li><a href={href(lang, 'contact/')}>{t.contact}</a></li>
+            </ul>
+          </nav>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 20;
+    color: var(--on-net);
+  }
+
+  .site-header__bar {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-5);
+    padding-top: 0;
+  }
+
+  /* The logo hangs from the top edge on an aluminium plate. */
+  .logo-tag {
+    position: relative;
+    flex: none;
+    display: block;
+    padding: 1.15rem 0.85rem 0.75rem;
+    background: var(--alu);
+    border: 1px solid var(--alu-line);
+    border-top: 0;
+    border-radius: 0 0 var(--radius-tag) var(--radius-tag);
+    transition: transform 260ms var(--ease-out);
+    --focus: var(--leaf-hi);
+    /* punched hole at the hanging point */
+    -webkit-mask: radial-gradient(circle 0.27rem at 50% 0.67rem, transparent 96%, #000 100%);
+    mask: radial-gradient(circle 0.27rem at 50% 0.67rem, transparent 96%, #000 100%);
+  }
+
+  .logo-tag:hover {
+    transform: translateY(2px);
+  }
+
+  .logo-tag:focus-visible {
+    outline: 3px solid var(--leaf);
+    outline-offset: -5px;
+  }
+
+  .logo-tag img {
+    width: clamp(64px, 7vw, 92px);
+    height: auto;
+  }
+
+  .nav-desk {
+    display: none;
+    margin-left: auto;
+    padding-top: 1.55rem;
+  }
+
+  .nav-desk ul {
+    display: flex;
+    gap: 0.15rem 1.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-desk a {
+    display: inline-block;
+    padding: 0.35rem 0;
+    font-size: 0.95rem;
+    font-stretch: 86%;
+    font-weight: 620;
+    text-decoration: none;
+    color: var(--on-net);
+    border-bottom: 2px solid transparent;
+    text-shadow: 0 1px 12px rgb(0 0 0 / 0.35);
+  }
+
+  .nav-desk a:hover {
+    border-bottom-color: currentColor;
+  }
+
+  .nav-desk a[aria-current='page'] {
+    border-bottom-color: var(--leaf-hi);
+  }
+
+  .site-header__util {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-left: auto;
+    padding-top: 1.15rem;
+  }
+
+  .nav-desk + .site-header__util {
+    margin-left: var(--s-4);
+  }
+
+  .lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    padding: 0 0.4rem;
+    font-size: 0.8125rem;
+    font-stretch: 118%;
+    font-weight: 680;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    color: var(--on-net);
+  }
+
+  .lang:hover span {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .contact-btn {
+    display: none;
+  }
+
+  .menu summary {
+    list-style: none;
+  }
+
+  .menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu[open] summary {
+    position: relative;
+    z-index: 2;
+  }
+
+  .menu__panel {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    overflow-y: auto;
+    padding: 6.5rem var(--gutter) var(--s-7);
+  }
+
+  .menu__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--net-3);
+  }
+
+  .menu__list > li {
+    border-bottom: 1px solid var(--net-3);
+  }
+
+  .menu__list a {
+    display: block;
+    padding: 0.85rem 0;
+    font-size: 1.6rem;
+    font-family: var(--display);
+    font-weight: 800;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .menu__list a[aria-current='page'] {
+    color: var(--leaf-hi);
+  }
+
+  .menu__list ul {
+    list-style: none;
+    margin: -0.4rem 0 0.8rem;
+    padding: 0 0 0 1rem;
+  }
+
+  .menu__list ul a {
+    font-size: 1rem;
+    font-stretch: 100%;
+    font-weight: 500;
+    text-transform: none;
+    padding: 0.4rem 0;
+  }
+
+  @media (min-width: 720px) {
+    .contact-btn {
+      display: inline-flex;
+    }
+  }
+
+  @media (min-width: 1180px) {
+    .nav-desk {
+      display: block;
+    }
+    .menu {
+      display: none;
+    }
+    .site-header__util {
+      margin-left: 0;
+    }
+  }
+</style>

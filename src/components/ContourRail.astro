@@ -1,0 +1,130 @@
+---
+// Signature: a contour progress rail. Each section is a bench tick; the section
+// in view re-greens. Works as plain anchor links without JavaScript.
+import { ui, type Lang } from '../i18n';
+interface Props {
+  lang: Lang;
+  items: { id: string; label: string }[];
+}
+const { lang, items } = Astro.props;
+---
+<nav class="rail" aria-label={ui[lang].rail}>
+  <ol>
+    {items.map((it, i) => (
+      <li style={`--i:${i}`}>
+        <a href={`#${it.id}`} data-rail={it.id}>
+          <span class="rail__tick" aria-hidden="true"></span>
+          <span class="rail__label">{it.label}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<script>
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.rail a[data-rail]'));
+  const targets = links
+    .map((a) => document.getElementById(a.dataset.rail!))
+    .filter((el): el is HTMLElement => !!el);
+
+  if (targets.length && 'IntersectionObserver' in window) {
+    const visible = new Map<string, number>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) visible.set(e.target.id, e.isIntersecting ? e.intersectionRatio : 0);
+        let best = '';
+        let ratio = 0;
+        for (const t of targets) {
+          const r = visible.get(t.id) ?? 0;
+          if (r > ratio) { ratio = r; best = t.id; }
+        }
+        if (!best) return;
+        let reached = true;
+        for (const a of links) {
+          const active = a.dataset.rail === best;
+          a.toggleAttribute('data-reached', reached);
+          if (active) { a.setAttribute('aria-current', 'true'); reached = false; }
+          else a.removeAttribute('aria-current');
+        }
+      },
+      { threshold: [0, 0.15, 0.3, 0.5, 0.75], rootMargin: '-20% 0px -35% 0px' },
+    );
+    targets.forEach((t) => io.observe(t));
+  }
+</script>
+
+<style>
+  .rail {
+    display: none;
+  }
+
+  @media (min-width: 1360px) {
+    .rail {
+      display: block;
+      position: fixed;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 15;
+    }
+
+    .rail ol {
+      list-style: none;
+      margin: 0;
+      padding: 0.75rem 0;
+      display: grid;
+    }
+
+    .rail a {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      min-height: 34px;
+      padding-right: 0.75rem;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    /* Ticks step down like benches: each one a little longer. */
+    .rail__tick {
+      display: block;
+      height: 0;
+      width: calc(30px + var(--i) * 4px);
+      border-top: 3px solid var(--laterite);
+      transform: scaleX(0.55);
+      transform-origin: left center;
+      transition: border-color 400ms var(--ease-out), transform 400ms var(--ease-out);
+      box-shadow: 0 0 0 1px rgb(244 245 242 / 0.6);
+    }
+
+    .rail__label {
+      font-size: 0.6875rem;
+      font-stretch: 120%;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.45rem;
+      border-radius: 3px;
+      background: var(--alu-hi);
+      box-shadow: 0 4px 10px -6px rgb(0 0 0 / 0.4);
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
+    }
+
+    .rail a[data-reached] .rail__tick {
+      border-top-color: color-mix(in srgb, var(--leaf) 55%, var(--laterite));
+    }
+
+    .rail a[aria-current] .rail__tick {
+      border-top-color: var(--leaf-hi);
+      transform: scaleX(1);
+    }
+
+    .rail a:hover .rail__label,
+    .rail a:focus-visible .rail__label {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

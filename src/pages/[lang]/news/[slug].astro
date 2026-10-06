@@ -1,0 +1,135 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import Prov from '../../../components/Prov.astro';
+import Icon from '../../../components/Icon.astro';
+import { company } from '../../../data/company';
+import { href, formatDate, ui, type Lang } from '../../../i18n';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('news', (e) => !e.data.draft);
+  return posts.map((post) => {
+    const [lang, slug] = post.id.split('/');
+    return { params: { lang, slug }, props: { post } };
+  });
+}
+
+const { post } = Astro.props;
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const { Content } = await render(post);
+const iso = post.data.date.toISOString().slice(0, 10);
+
+const others = (await getCollection('news', (e) => e.id.startsWith(`${lang}/`) && e.id !== post.id && !e.data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 2);
+
+const article = {
+  '@context': 'https://schema.org',
+  '@type': 'NewsArticle',
+  headline: post.data.title,
+  description: post.data.summary,
+  datePublished: iso,
+  inLanguage: lang,
+  publisher: { '@type': 'Organization', name: company.brand },
+};
+---
+<Base lang={lang} title={post.data.title} description={post.data.summary} type="article" jsonld={[article]}>
+  <PageHead lang={lang} title={post.data.title} summary={post.data.summary} crumbs={[{ label: L('Berita', 'News'), path: 'news/' }, { label: formatDate(lang, post.data.date) }]}>
+    <p class="stamp"><time datetime={iso}>{formatDate(lang, post.data.date)}</time></p>
+  </PageHead>
+
+  <section class="section ground-alu">
+    <div class="wrap article">
+      <article class="prose article__body">
+        <Content />
+        {post.data.source && (
+          <Prov
+            class="article__src"
+            label={t.source}
+            text={post.data.source}
+          />
+        )}
+        {post.data.sourceUrl && <p class="article__link"><a href={post.data.sourceUrl} rel="noopener" target="_blank">{L('Baca sumber asli', 'Read the original source')} <Icon name="external" size={16} /></a></p>}
+      </article>
+      <aside class="article__aside">
+        <a class="back" href={href(lang, 'news/')}><Icon name="arrow" size={18} /> {t.allNews}</a>
+        {others.length > 0 && (
+          <div class="more">
+            <h2 class="stamp muted">{L('Berita lainnya', 'More news')}</h2>
+            <ul class="rule-list">
+              {others.map((o) => (
+                <li><a href={href(lang, `news/${o.id.split('/')[1]}/`)}>{o.data.title}</a></li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .article {
+    display: grid;
+    gap: var(--s-8);
+  }
+
+  @media (min-width: 1000px) {
+    .article {
+      grid-template-columns: minmax(0, 1fr) 18rem;
+    }
+  }
+
+  .article__body {
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+
+  .article__body :global(p:first-child) {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    font-stretch: 94%;
+  }
+
+  .article__body :global(.article__src) {
+    margin-top: var(--s-6);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--alu-line);
+  }
+
+  .article__link {
+    font-size: 0.9375rem;
+  }
+
+  .article__link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .article__aside {
+    display: grid;
+    gap: var(--s-6);
+    align-content: start;
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 650;
+  }
+
+  .back :global(svg) {
+    transform: scaleX(-1);
+  }
+
+  .more .rule-list li {
+    padding: var(--s-3) 0;
+    font-weight: 600;
+    font-stretch: 90%;
+  }
+</style>

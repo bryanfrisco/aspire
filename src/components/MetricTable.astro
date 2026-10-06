@@ -1,0 +1,89 @@
+---
+// Performance ledger awaiting real data. Empty cells show a dash; one visible
+// placeholder note names what to fill.
+import TBD from './TBD.astro';
+interface Props {
+  caption: string;
+  metricLabel: string;
+  unitLabel: string;
+  rows: { label: string; unit: string }[];
+  years: string[];
+  note: string;
+  dark?: boolean;
+}
+const { caption, metricLabel, unitLabel, rows, years, note, dark } = Astro.props;
+---
+<div class:list={['metric', dark && 'metric--dark']}>
+  <div class="ledger-scroll">
+    <table class="ledger">
+      <caption class="visually-hidden">{caption}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{metricLabel}</th>
+          <th scope="col">{unitLabel}</th>
+          {years.map((y) => <th scope="col" class="num">{y}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr>
+            <th scope="row">{r.label}</th>
+            <td class="metric__unit">{r.unit}</td>
+            {years.map(() => <td class="num metric__empty" aria-label="—">—</td>)}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="metric__scope" aria-hidden="true">{caption}</p>
+  <TBD note={note} />
+</div>
+
+<style>
+  .metric {
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+  }
+
+  .metric .ledger-scroll {
+    width: 100%;
+  }
+
+  .metric__scope {
+    font-size: 0.875rem;
+    opacity: 0.8;
+  }
+
+  .metric__unit {
+    color: var(--ink-2);
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .metric__empty {
+    color: var(--alu-line);
+  }
+
+  .metric--dark .ledger th,
+  .metric--dark .ledger td {
+    border-bottom-color: var(--net-3);
+  }
+
+  .metric--dark .ledger thead th {
+    border-bottom-color: var(--on-net);
+  }
+
+  .metric--dark .ledger th[scope='row'],
+  .metric--dark .metric__unit {
+    color: var(--on-net-2);
+  }
+
+  .metric--dark .metric__empty {
+    color: var(--net-3);
+  }
+
+  .metric .ledger th[scope='row'] {
+    width: auto;
+  }
+</style>

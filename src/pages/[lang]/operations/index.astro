@@ -1,0 +1,186 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import SiteMap from '../../../components/SiteMap.astro';
+import Status from '../../../components/Status.astro';
+import Bench from '../../../components/Bench.astro';
+import Icon from '../../../components/Icon.astro';
+import Prov from '../../../components/Prov.astro';
+import bay from '../../../assets/photos/bay-stockpiles.jpg';
+import { projects } from '../../../data/projects';
+import { href, langPaths, ui, type Lang } from '../../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const title = L('Operasi', 'Operations');
+---
+<Base lang={lang} title={title} description={L('Enam lini operasi ASPIRE Stargate di Konawe Utara: tambang Blok Selatan, eksplorasi Blok Utara, jasa tambang, smelter RKEF, kawasan industri, dan bahan baterai.', 'ASPIRE Stargate’s six lines of operation in North Konawe: South Block mine, North Block exploration, mining services, RKEF smelter, industrial park and battery materials.')}>
+  <PageHead
+    lang={lang}
+    title={L('Dari pit ke pelabuhan ke smelter', 'From pit to port to smelter')}
+    summary={L('Seluruh rantai nilai berada dalam satu konsesi: deposit, jalan angkut milik sendiri, dua jeti, dan lahan industri di Teluk Matarape.', 'The whole value chain sits in one concession: the deposits, our own haul roads, two jetties and industrial land on Matarape Bay.')}
+    crumbs={[{ label: title }]}
+    image={{ src: bay, alt: L('Teluk Matarape dan timbunan bijih laterit', 'Matarape Bay and laterite ore stockpiles'), credit: L('Teluk Matarape · arsip ASPIRE', 'Matarape Bay · ASPIRE archive') }}
+  />
+
+  <section class="section ground-alu">
+    <div class="wrap">
+      <ol class="ops">
+        {projects.map((p) => (
+          <li class={`ops__row tread--${p.status}`}>
+            <a href={href(lang, `operations/${p.slug}/`)} class="ops__link">
+              <span class="ops__no stamp">No. {p.no}<br />{p.code}</span>
+              <span class="ops__main">
+                <span class="h2 ops__name">{p.name[lang]}</span>
+                <span class="muted">{p.entity}</span>
+              </span>
+              <span class="ops__side">
+                <span class="ops__meta"><span class="stamp muted">{p.stage[lang]}</span><Status status={p.status} lang={lang} /></span>
+                <span>{p.summary[lang]}</span>
+                <span class="ops__go stamp">{ui[lang].readMore} <Icon name="arrow" size={16} /></span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu-hi)" shape="c" />
+  <section class="section ground-alu-hi">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Peta lokasi', 'Site map')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('Pilih nomor pada peta untuk melihat operasinya.', 'Choose a number on the map to see its operation.')}</span></p>
+      </div>
+      <SiteMap lang={lang} />
+    </div>
+  </section>
+
+  <Bench fill="var(--net)" line="var(--net-3)" shape="a" />
+  <section class="section ground-net">
+    <div class="wrap split">
+      <div>
+        <h2 class="h2">{L('Logistik segala cuaca', 'All-weather logistics')}</h2>
+      </div>
+      <div class="logi">
+        <dl class="logi__list">
+          <div><dt class="stamp">{L('Kapasitas muat jeti', 'Jetty loading capacity')}</dt><dd>{L('hingga 20.000 t/hari', 'up to 20,000 t/day')}</dd></div>
+          <div><dt class="stamp">{L('Kapasitas stockpile', 'Stockpile capacity')}</dt><dd>{L('1,5 juta ton', '1.5 million tonnes')}</dd></div>
+          <div><dt class="stamp">{L('Jarak pit ke jeti', 'Pit to jetty')}</dt><dd>0.5–1.8 km</dd></div>
+          <div><dt class="stamp">{L('Lahan dikuasai', 'Land secured')}</dt><dd>{L('540 ha, termasuk pelabuhan dan jalan utama', '540 ha, including ports and main road')}</dd></div>
+        </dl>
+        <Prov label={ui[lang].source} text="aspire.id" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ops {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  .ops__row {
+    border-top: 3px solid var(--ink);
+  }
+
+  .tread--construction {
+    border-top-style: dashed;
+  }
+  .tread--exploration {
+    border-top-style: dotted;
+  }
+  .tread--planned {
+    border-top-width: 1px;
+  }
+
+  .ops__link {
+    display: grid;
+    gap: var(--s-3) var(--s-6);
+    padding-top: var(--s-4);
+    text-decoration: none;
+  }
+
+  .ops__name {
+    display: block;
+    font-size: clamp(1.75rem, 1.3rem + 2vw, 3rem);
+    transition: color 160ms;
+  }
+
+  .ops__main {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .ops__side {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+    max-width: 48ch;
+  }
+
+  .ops__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    align-items: center;
+  }
+
+  .ops__go {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .ops__link:hover .ops__name {
+    color: var(--leaf);
+  }
+
+  @media (min-width: 900px) {
+    .ops__link {
+      grid-template-columns: 6rem minmax(0, 1.2fr) minmax(0, 1fr);
+    }
+    /* benches stepping down the page */
+    .ops__row:nth-child(even) {
+      margin-left: 6%;
+    }
+  }
+
+  .logi__list {
+    display: grid;
+    gap: 0;
+    margin: 0 0 var(--s-4);
+  }
+
+  .logi__list > div {
+    display: grid;
+    gap: 0.3rem;
+    padding: var(--s-4) 0;
+    border-top: 1px solid var(--net-3);
+  }
+
+  .logi__list dt {
+    color: var(--on-net-2);
+  }
+
+  .logi__list dd {
+    margin: 0;
+    font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2rem);
+    font-family: var(--display);
+    font-weight: 760;
+  }
+
+  @media (min-width: 720px) {
+    .logi__list {
+      grid-template-columns: 1fr 1fr;
+      column-gap: var(--s-6);
+    }
+  }
+</style>

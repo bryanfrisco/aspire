@@ -1,0 +1,413 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Bench from '../../components/Bench.astro';
+import TBD from '../../components/TBD.astro';
+import Prov from '../../components/Prov.astro';
+import Icon from '../../components/Icon.astro';
+import { gcgPrinciples } from '../../data/company';
+import { href, langPaths, ui, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const title = L('Tata kelola', 'Governance');
+const policies = (await getCollection('reports')).filter((r) => r.data.type === 'governance');
+
+const exec = [
+  L('Presiden / CEO', 'President / Chief Executive Officer'),
+  L('Wakil Presiden / COO', 'Vice President / Chief Operating Officer'),
+  'CFO / Chief Financial Officer',
+  'CMTO / Chief Mining Technology Officer',
+  'CSISO / Chief Strategy, Integrity & Sustainability Officer',
+];
+
+const rail = [
+  { id: 'gcg', label: 'GCG' },
+  { id: 'structure', label: L('Struktur', 'Structure') },
+  { id: 'ethics', label: L('Etika', 'Ethics') },
+  { id: 'wbs', label: 'WBS' },
+  { id: 'policies', label: L('Kebijakan', 'Policies') },
+];
+---
+<Base lang={lang} title={title} description={L('Tata kelola perusahaan ASPIRE Stargate: prinsip GCG, struktur tata kelola, kode etik, antikorupsi, dan sistem pelaporan pelanggaran (WBS).', 'ASPIRE Stargate corporate governance: GCG principles, governance structure, code of conduct, anti-corruption and the whistleblowing system (WBS).')} rail={rail}>
+  <PageHead
+    lang={lang}
+    title={L('Tata kelola perusahaan', 'Corporate governance')}
+    summary={L('Fondasi untuk manajemen yang transparan, efisien, akuntabel, bertanggung jawab, independen, adil, dan setara.', 'The foundation for management with transparency, efficiency, accountability, responsibility, independency, fairness and equality.')}
+    crumbs={[{ label: title }]}
+  />
+
+  <section class="section ground-alu" id="gcg">
+    <div class="wrap split">
+      <div class="section-head">
+        <h2 class="h2">{L('Prinsip GCG', 'GCG principles')}</h2>
+      </div>
+      <div class="prose gcg">
+        <p class="lead">{L(
+          'Untuk mencapai tujuan dan sasaran kami, ASPIREstargate memiliki komitmen tulus untuk terus memperbaiki tata kelola perusahaan secara berkelanjutan, karena tata kelola adalah fondasi bagi manajemen yang transparan, efisien, akuntabel, bertanggung jawab, independen, adil, dan setara.',
+          'In order to achieve our purpose and goals, ASPIREstargate has the utmost sincere commitment to keep improving our corporate governance on an ongoing basis, as it is the foundation for ensuring management with transparency, efficiency, accountability, responsibility, independency, fairness and equality.',
+        )}</p>
+        <ul class="principles">
+          {gcgPrinciples.map((p) => <li class="stamp">{p[lang]}</li>)}
+        </ul>
+        <Prov label={t.source} text="aspire.id" />
+      </div>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu-hi)" shape="b" />
+  <section class="section ground-alu-hi" id="structure">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Struktur tata kelola', 'Governance structure')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('RUPS mengangkat dan memberhentikan Dewan Komisaris, Direksi, dan auditor independen.', 'The General Meeting of Shareholders elects and dismisses the Board of Commissioners, the Board of Directors and the independent auditor.')}</span></p>
+      </div>
+
+      <div class="gov" role="group" aria-label={L('Bagan struktur tata kelola', 'Governance structure chart')}>
+        <div class="gov__gms node node--dark">{L('Rapat Umum Pemegang Saham (RUPS)', 'General Meeting of Shareholders')}</div>
+        <p class="gov__edge stamp">{L('Pengangkatan / pemberhentian', 'Election / dismissal')}</p>
+
+        <div class="gov__company">
+          <p class="gov__label stamp">ASPIREstargate</p>
+          <div class="gov__boards">
+            <div class="node">{L('Direksi', 'Board of Directors')}</div>
+            <p class="gov__mutual stamp"><Icon name="arrow" size={14} /> {L('Pelaporan · pengawasan', 'Reporting · supervision')}</p>
+            <div class="node">{L('Dewan Komisaris', 'Board of Commissioners')}</div>
+          </div>
+          <div class="gov__exec">
+            <div class="node node--lead">{L('Presiden / CEO (Wakil Presiden)', 'President / CEO (Vice President)')}</div>
+            <div class="gov__committee">
+              <p class="h3">{L('Komite Eksekutif', 'Executive Committee')}</p>
+              <ul>
+                {exec.map((e) => <li>{e}</li>)}
+              </ul>
+            </div>
+            <div class="gov__units">
+              <div class="node node--unit">{L('Keuangan & Akuntansi', 'Finance & Accounting')}</div>
+              <div class="node node--unit">{L('Strategi, Integritas & Keberlanjutan', 'Strategy, Integrity & Sustainability')}</div>
+            </div>
+          </div>
+        </div>
+
+        <p class="gov__edge stamp">{L('Pengelolaan usaha', 'Business management')}</p>
+        <div class="node node--dark">{L('Grup perusahaan dan anak usaha ASPIREstargate', 'ASPIREstargate group companies and subsidiaries')}</div>
+
+        <div class="gov__outside">
+          <div class="node node--out"><span class="stamp">{L('Audit akuntansi', 'Accounting audit')}</span>{L('Auditor independen', 'Independent auditor')}</div>
+          <div class="node node--out"><span class="stamp">{L('Konsultasi · kolaborasi', 'Consultation · collaboration')}</span>{L('Konsultan pihak ketiga: hukum, teknis, keuangan', 'Third-party consultants: legal, technical, financial')}</div>
+        </div>
+      </div>
+      <Prov label={t.source} text={L('Bagan struktur tata kelola, aspire.id', 'Governance structure chart, aspire.id')} />
+    </div>
+  </section>
+
+  <Bench fill="var(--alu)" shape="c" />
+  <section class="section ground-alu" id="ethics">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Etika & integritas', 'Ethics & integrity')}</h2>
+      </div>
+      <ul class="ethics">
+        <li>
+          <h3 class="h3">{L('Pedoman perilaku', 'Code of conduct')}</h3>
+          <p>{L('Standar perilaku bagi seluruh insan ASPIRE dan mitra kerja: integritas, rasa hormat, kejujuran, keterbukaan, dan akuntabilitas.', 'Standards of conduct for all ASPIRE people and partners: integrity, respect, honesty, openness and accountability.')}</p>
+          <TBD note={L('Unggah dokumen pedoman perilaku', 'Upload the code of conduct')} />
+        </li>
+        <li>
+          <h3 class="h3">{L('Antikorupsi & antisuap', 'Anti-corruption & anti-bribery')}</h3>
+          <p>{L('Larangan suap, gratifikasi, dan pembayaran fasilitasi dalam bentuk apa pun.', 'Bribery, gratuities and facilitation payments are prohibited in any form.')}</p>
+          <TBD note={L('Unggah kebijakan antikorupsi; konfirmasi kesesuaian dengan kebijakan grup Astra', 'Upload the anti-corruption policy; confirm alignment with Astra group policy')} />
+        </li>
+        <li>
+          <h3 class="h3">{L('Benturan kepentingan', 'Conflicts of interest')}</h3>
+          <p>{L('Kewajiban mengungkapkan kepentingan pribadi yang dapat memengaruhi keputusan bisnis.', 'The duty to disclose personal interests that could influence business decisions.')}</p>
+          <TBD note={L('Prosedur pengungkapan', 'Disclosure procedure')} />
+        </li>
+        <li>
+          <h3 class="h3">{L('Kepatuhan perizinan', 'Permit compliance')}</h3>
+          <p>{L('Kedua IUP berstatus Clear & Clean; IPPKH, izin jeti, dan izin lingkungan telah diperoleh; seluruh kewajiban kepada pemerintah dalam keadaan baik.', 'Both IUPs are Clear & Clean; IPPKH, jetty and environmental permits are in place; all obligations to the government are in good standing.')}</p>
+          <Prov label={t.source} text="aspire.id" />
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <Bench fill="var(--net)" line="var(--net-3)" shape="a" />
+  <section class="section ground-net" id="wbs">
+    <div class="wrap split">
+      <div class="section-head">
+        <h2 class="h2">{L('Sistem pelaporan pelanggaran (WBS)', 'Whistleblowing system (WBS)')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('Laporkan dugaan pelanggaran secara aman dan rahasia.', 'Report suspected misconduct safely and confidentially.')}</span></p>
+      </div>
+      <div class="wbs">
+        <div>
+          <h3 class="h3">{L('Apa yang dapat dilaporkan', 'What you can report')}</h3>
+          <ul class="rule-list">
+            <li>{L('Korupsi, suap, gratifikasi, dan penipuan', 'Corruption, bribery, gratuities and fraud')}</li>
+            <li>{L('Benturan kepentingan', 'Conflicts of interest')}</li>
+            <li>{L('Pelanggaran K3 dan lingkungan', 'Safety and environmental violations')}</li>
+            <li>{L('Pelecehan, diskriminasi, dan pelanggaran HAM', 'Harassment, discrimination and human rights abuses')}</li>
+            <li>{L('Pelanggaran hukum dan pedoman perilaku', 'Breaches of law and of the code of conduct')}</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="h3">{L('Perlindungan pelapor', 'Protection for reporters')}</h3>
+          <p>{L('Identitas pelapor dijaga kerahasiaannya, dan pelapor yang beritikad baik dilindungi dari pembalasan.', 'The reporter’s identity is kept confidential, and reporters acting in good faith are protected from retaliation.')}</p>
+        </div>
+        <TBD block title={L('Saluran WBS', 'WBS channels')} note={L('Email khusus WBS, nomor telepon/WhatsApp, alamat surat, atau tautan sistem WBS grup Astra; serta pihak pengelola laporan.', 'Dedicated WBS email, phone/WhatsApp, postal address or link to the Astra group WBS; and who handles reports.')} />
+      </div>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu)" shape="b" />
+  <section class="section ground-alu" id="policies">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Kebijakan perusahaan', 'Company policies')}</h2>
+      </div>
+      <ul class="rule-list docs">
+        {policies.map((p) => (
+          <li>
+            <Icon name="doc" size={22} />
+            <span class="docs__title">{p.data.title[lang]}</span>
+            {p.data.file ? (
+              <a class="btn btn--line" href={p.data.file} download>{t.download} <Icon name="download" /></a>
+            ) : (
+              <TBD note={t.notYet} />
+            )}
+          </li>
+        ))}
+      </ul>
+      <p class="docs__more"><a href={href(lang, 'investors/#reports')}>{L('Semua dokumen dan laporan', 'All documents and reports')}</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .gcg {
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .principles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .principles li {
+    padding: 0.45rem 0.7rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+  }
+
+  /* ---------------- Governance chart */
+  .gov {
+    display: grid;
+    gap: var(--s-3);
+    justify-items: stretch;
+    margin-bottom: var(--s-5);
+  }
+
+  .node {
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    background: var(--alu-hi);
+    font-weight: 650;
+    font-stretch: 88%;
+    text-align: center;
+  }
+
+  .node--dark {
+    background: var(--net);
+    color: var(--on-net);
+    border-color: var(--net);
+  }
+
+  .node--lead {
+    background: var(--laterite);
+    color: var(--on-laterite);
+    border-color: var(--laterite);
+  }
+
+  .node--unit {
+    background: transparent;
+    border-style: dashed;
+  }
+
+  .node--out {
+    display: grid;
+    gap: 0.25rem;
+    text-align: left;
+    background: transparent;
+  }
+
+  .node--out .stamp {
+    color: var(--ink-2);
+  }
+
+  .gov__edge {
+    justify-self: center;
+    position: relative;
+    padding: 0.6rem 0 0.6rem 1rem;
+    color: var(--ink-2);
+    border-left: 2px solid var(--ink);
+    margin: 0;
+  }
+
+  .gov__company {
+    position: relative;
+    display: grid;
+    gap: var(--s-4);
+    padding: var(--s-6) var(--s-4) var(--s-4);
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+  }
+
+  .gov__label {
+    position: absolute;
+    top: -0.7rem;
+    left: var(--s-4);
+    padding: 0.1rem 0.5rem;
+    background: var(--alu-hi);
+  }
+
+  .gov__boards {
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  .gov__mutual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin: 0;
+    color: var(--ink-2);
+  }
+
+  .gov__exec {
+    display: grid;
+    gap: var(--s-3);
+  }
+
+  .gov__committee {
+    padding: var(--s-4);
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--laterite) 10%, var(--alu-hi));
+    border: 1.5px solid var(--laterite);
+  }
+
+  .gov__committee ul {
+    margin: var(--s-3) 0 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .gov__units {
+    display: grid;
+    gap: var(--s-3);
+  }
+
+  .gov__outside {
+    display: grid;
+    gap: var(--s-3);
+    margin-top: var(--s-4);
+  }
+
+  @media (min-width: 900px) {
+    .gov__boards {
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+    }
+    .gov__exec {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      align-items: start;
+    }
+    .gov__units {
+      grid-column: 1 / -1;
+      grid-template-columns: 1fr 1fr;
+    }
+    .gov__outside {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* ---------------- Ethics */
+  .ethics {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-6) var(--s-7);
+  }
+
+  @media (min-width: 900px) {
+    .ethics {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .ethics li {
+    display: grid;
+    gap: var(--s-3);
+    justify-items: start;
+    align-content: start;
+    padding-top: var(--s-4);
+    border-top: 3px solid var(--ink);
+  }
+
+  /* ---------------- WBS */
+  .wbs {
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  .wbs > div {
+    display: grid;
+    gap: var(--s-3);
+  }
+
+  .wbs .rule-list li {
+    padding: var(--s-3) 0;
+  }
+
+  /* ---------------- Docs */
+  .docs > li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--s-3) var(--s-4);
+    align-items: center;
+  }
+
+  .docs > li > :last-child {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  @media (min-width: 720px) {
+    .docs > li {
+      grid-template-columns: auto 1fr auto;
+    }
+    .docs > li > :last-child {
+      grid-column: 3;
+    }
+  }
+
+  .docs__title {
+    font-weight: 650;
+    font-stretch: 90%;
+  }
+
+  .docs__more {
+    margin-top: var(--s-5);
+  }
+</style>

@@ -1,0 +1,20 @@
+---
+// A stepped bench edge cut into the top of the following section.
+// `fill` is the following section's ground; the contour re-greens on view.
+interface Props {
+  fill: string;
+  line?: string;
+  shape?: 'a' | 'b' | 'c';
+}
+const { fill, line = 'var(--ochre)', shape = 'a' } = Astro.props;
+const shapes = {
+  a: { fill: 'M0 2H290V42H610V82H1000V122H0Z', line: 'M0 2H290V42H610V82H1000' },
+  b: { fill: 'M0 82H330V42H700V2H1000V122H0Z', line: 'M0 82H330V42H700V2H1000' },
+  c: { fill: 'M0 42H180V2H520V62H840V82H1000V122H0Z', line: 'M0 42H180V2H520V62H840V82H1000' },
+};
+const s = shapes[shape];
+---
+<svg class="bench" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true" focusable="false" style={`--bench-fill:${fill};--bench-line:${line}`}>
+  <path class="bench__fill" d={s.fill}></path>
+  <path class="bench__contour" d={s.line}></path>
+</svg>

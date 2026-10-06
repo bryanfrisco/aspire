@@ -1,0 +1,180 @@
+---
+import { Image } from 'astro:assets';
+import mark from '../assets/brand/aspire-mark.png';
+import Bench from './Bench.astro';
+import Icon from './Icon.astro';
+import { company } from '../data/company';
+import { projects } from '../data/projects';
+import { ui, href, type Lang } from '../i18n';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang].footer;
+const year = new Date().getFullYear();
+const cols = [
+  {
+    title: t.company,
+    links: [
+      { p: 'about/', l: { id: 'Tentang kami', en: 'About us' } },
+      { p: 'governance/', l: { id: 'Tata kelola', en: 'Governance' } },
+      { p: 'careers/', l: { id: 'Karier', en: 'Careers' } },
+      { p: 'contact/', l: { id: 'Kontak', en: 'Contact' } },
+    ],
+  },
+  {
+    title: t.operations,
+    links: [
+      { p: 'operations/', l: { id: 'Ikhtisar operasi', en: 'Operations overview' } },
+      ...projects.slice(0, 4).map((p) => ({ p: `operations/${p.slug}/`, l: p.name })),
+      { p: 'products/', l: { id: 'Produk', en: 'Products' } },
+    ],
+  },
+  {
+    title: t.sustainability,
+    links: [
+      { p: 'sustainability/', l: { id: 'Lingkungan & ESG', en: 'Environment & ESG' } },
+      { p: 'sustainability/health-safety/', l: { id: 'Keselamatan & kesehatan kerja', en: 'Health & safety' } },
+      { p: 'sustainability/community/', l: { id: 'Pemberdayaan masyarakat', en: 'Community' } },
+    ],
+  },
+  {
+    title: t.media,
+    links: [
+      { p: 'investors/', l: { id: 'Investor & laporan', en: 'Investors & reports' } },
+      { p: 'news/', l: { id: 'Berita', en: 'News' } },
+    ],
+  },
+];
+---
+<footer class="site-footer ground-net">
+  <Bench fill="var(--net)" line="var(--net-3)" shape="c" />
+  <div class="wrap site-footer__inner">
+    <div class="site-footer__id">
+      <Image src={mark} alt="" width={56} height={56} class="mark" />
+      <p class="h3">{company.brand}</p>
+      <p class="muted">{t.tagline}</p>
+      <address>
+        <span class="stamp muted">{t.hq}</span><br />
+        {company.legalName}<br />
+        {company.hq.building}<br />
+        {company.hq.street}<br />
+        {company.hq.city}, {company.hq.country[lang]}
+      </address>
+      <p class="contacts">
+        <a href={`mailto:${company.email}`}><Icon name="mail" size={16} /> {company.email}</a>
+      </p>
+    </div>
+
+    <nav class="site-footer__cols" aria-label={ui[lang].footer.sitemap}>
+      {cols.map((c) => (
+        <div>
+          <p class="stamp muted">{c.title}</p>
+          <ul>
+            {c.links.map((l) => <li><a href={href(lang, l.p)}>{l.l[lang]}</a></li>)}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  </div>
+
+  <div class="wrap site-footer__base">
+    <a class="wbs" href={href(lang, 'governance/#wbs')}><Icon name="shield" size={18} /> {t.wbs}</a>
+    <p class="muted">© {year} {company.legalName}. {company.member}. {t.rights}</p>
+    <p class="legal">
+      <a href={href(lang, 'privacy/')}>{lang === 'id' ? 'Kebijakan privasi' : 'Privacy policy'}</a>
+      <a href={href(lang, 'terms/')}>{lang === 'id' ? 'Syarat penggunaan' : 'Terms of use'}</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    margin-top: calc(var(--step) * 3);
+    padding-bottom: var(--s-6);
+  }
+
+  .site-footer__inner {
+    display: grid;
+    gap: var(--s-7);
+    padding-block: var(--s-7) var(--s-7);
+  }
+
+  @media (min-width: 960px) {
+    .site-footer__inner {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    }
+  }
+
+  .site-footer__id {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+    max-width: 30rem;
+  }
+
+  .mark {
+    width: 48px;
+    height: 48px;
+  }
+
+  address {
+    font-style: normal;
+    line-height: 1.55;
+    margin-top: var(--s-3);
+  }
+
+  .contacts a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .site-footer__cols {
+    display: grid;
+    gap: var(--s-6);
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  }
+
+  .site-footer__cols ul {
+    list-style: none;
+    padding: 0;
+    margin: var(--s-3) 0 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .site-footer__cols a {
+    text-decoration: none;
+    color: var(--on-net);
+  }
+
+  .site-footer__cols a:hover {
+    text-decoration: underline;
+  }
+
+  .site-footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4) var(--s-6);
+    align-items: center;
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--net-3);
+    font-size: 0.875rem;
+  }
+
+  .wbs {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 650;
+    color: var(--on-net);
+  }
+
+  .legal {
+    display: flex;
+    gap: var(--s-5);
+    margin-left: auto;
+  }
+</style>

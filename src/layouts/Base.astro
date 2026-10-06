@@ -1,0 +1,89 @@
+---
+import '@fontsource-variable/big-shoulders-stencil-display';
+import '../styles/global.css';
+import fontUrl from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
+import displayFontUrl from '@fontsource-variable/big-shoulders-stencil-display/files/big-shoulders-stencil-display-latin-wght-normal.woff2?url';
+import { getImage } from 'astro:assets';
+import ogDefault from '../assets/photos/site-aerial-matarape.jpg';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ContourRail from '../components/ContourRail.astro';
+import { company } from '../data/company';
+import { langs, htmlLang, ogLocale, switchLang, ui, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  image?: ImageMetadata;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  jsonld?: Record<string, unknown>[];
+  rail?: { id: string; label: string }[];
+}
+
+const { lang, title, description, image = ogDefault, type = 'website', noindex = false, jsonld = [], rail } = Astro.props;
+const path = Astro.url.pathname;
+const site = Astro.site ?? new URL(company.url);
+const canonical = new URL(path, site).href;
+const og = await getImage({ src: image, width: 1200, height: 630, format: 'jpg', fit: 'cover' });
+const fullTitle = title.includes('ASPIRE') ? title : `${title} · ASPIRE Stargate`;
+
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: company.brand,
+  legalName: company.legalName,
+  url: site.href,
+  email: company.email,
+  parentOrganization: { '@type': 'Organization', name: 'PT United Tractors Tbk' },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: `${company.hq.building}, ${company.hq.street}`,
+    addressLocality: 'Jakarta',
+    postalCode: '12190',
+    addressCountry: 'ID',
+  },
+};
+---
+<!doctype html>
+<html lang={htmlLang[lang]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {langs.map((l) => <link rel="alternate" hreflang={htmlLang[l]} href={new URL(switchLang(path, l), site).href} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(switchLang(path, 'id'), site).href} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#9c3b1e" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preload" href={fontUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={displayFontUrl} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="ASPIRE Stargate" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(og.src, site).href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={ogLocale[lang]} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify([org, ...jsonld])} />
+  </head>
+  <body>
+    <a class="skip" href="#main">{ui[lang].skip}</a>
+    <Header lang={lang} />
+    <main id="main">
+      <slot />
+    </main>
+    {rail && rail.length > 1 && <ContourRail lang={lang} items={rail} />}
+    <Footer lang={lang} />
+  </body>
+</html>

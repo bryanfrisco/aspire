@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.astro/
+.vercel/
+.env*
+
+# local tooling
+.claude/settings.local.json
+.impeccable/config.local.json
+.impeccable/review/
+.impeccable/hook.cache.json
+graphify-out/
+.impeccable/questions/

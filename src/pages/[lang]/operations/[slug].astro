@@ -1,0 +1,144 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import Blocks from '../../../components/Blocks.astro';
+import Tag from '../../../components/Tag.astro';
+import Status from '../../../components/Status.astro';
+import Icon from '../../../components/Icon.astro';
+import { projects } from '../../../data/projects';
+import { langs, href, type Lang } from '../../../i18n';
+
+export function getStaticPaths() {
+  return langs.flatMap((lang) => projects.map((p) => ({ params: { lang, slug: p.slug } })));
+}
+
+const lang = Astro.params.lang as Lang;
+const p = projects.find((x) => x.slug === Astro.params.slug)!;
+const i = projects.indexOf(p);
+const prev = projects[i - 1];
+const next = projects[i + 1];
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const opsLabel = L('Operasi', 'Operations');
+---
+<Base lang={lang} title={`${p.name[lang]} · ${p.entity}`} description={p.summary[lang]} image={p.image?.src}>
+  <PageHead
+    lang={lang}
+    title={p.name[lang]}
+    summary={p.summary[lang]}
+    crumbs={[{ label: opsLabel, path: 'operations/' }, { label: p.name[lang] }]}
+    image={p.image ? { src: p.image.src, alt: p.image.alt[lang], credit: L('Arsip ASPIRE', 'ASPIRE archive') } : undefined}
+  >
+    <div class="op-id">
+      <span class="stamp">No. {p.no} · {p.code}</span>
+      <span>{p.entity}</span>
+      <span class="stamp">{p.stage[lang]}</span>
+      <Status status={p.status} lang={lang} />
+    </div>
+  </PageHead>
+
+  <section class="section ground-alu">
+    <div class="wrap op-layout">
+      <aside class="op-aside" aria-label={opsLabel}>
+        <h2 class="stamp muted">{L('Enam lini operasi', 'Six lines of operation')}</h2>
+        <ul class="op-tags">
+          {projects.map((x) => (
+            <li><Tag lang={lang} href={href(lang, `operations/${x.slug}/`)} no={x.no} code={x.code} name={x.name[lang]} current={x.slug === p.slug} /></li>
+          ))}
+        </ul>
+      </aside>
+      <div class="op-main">
+        <Blocks lang={lang} blocks={p.blocks} />
+        <nav class="op-pager" aria-label={L('Operasi lain', 'Other operations')}>
+          {prev ? <a href={href(lang, `operations/${prev.slug}/`)} class="op-pager__a"><span class="stamp muted">{L('Sebelumnya', 'Previous')}</span><span class="h3">{prev.name[lang]}</span></a> : <span></span>}
+          {next && <a href={href(lang, `operations/${next.slug}/`)} class="op-pager__a op-pager__a--next"><span class="stamp muted">{L('Berikutnya', 'Next')}</span><span class="h3">{next.name[lang]} <Icon name="arrow" size={20} /></span></a>}
+        </nav>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .op-id {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.2rem;
+    align-items: center;
+    color: var(--on-laterite-2);
+  }
+
+  .op-id :global(.status) {
+    color: var(--on-laterite);
+  }
+
+  .op-layout {
+    display: grid;
+    gap: var(--s-8);
+  }
+
+  @media (min-width: 1000px) {
+    .op-layout {
+      grid-template-columns: 17rem minmax(0, 1fr);
+    }
+    .op-aside {
+      position: sticky;
+      top: 2rem;
+      align-self: start;
+    }
+  }
+
+  .op-aside,
+  .op-main {
+    min-width: 0;
+  }
+
+  .op-tags {
+    list-style: none;
+    margin: var(--s-3) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  @media (max-width: 999px) {
+    .op-tags {
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(14rem, 1fr);
+      overflow-x: auto;
+      padding-bottom: var(--s-3);
+      scroll-snap-type: x mandatory;
+    }
+    .op-tags li {
+      scroll-snap-align: start;
+    }
+  }
+
+  .op-pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-5);
+    margin-top: var(--s-8);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--alu-line);
+  }
+
+  .op-pager__a {
+    display: grid;
+    gap: 0.35rem;
+    text-decoration: none;
+  }
+
+  .op-pager__a--next {
+    text-align: right;
+    justify-items: end;
+  }
+
+  .op-pager__a .h3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .op-pager__a:hover .h3 {
+    color: var(--leaf);
+  }
+</style>

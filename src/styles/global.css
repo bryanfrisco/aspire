@@ -1,0 +1,740 @@
+/* ASPIRE Stargate — Benches & Nursery Tags.
+   Laterite ground cut into benches; aluminium nursery tags as the component family;
+   leaf green reserved for the one focused or active thing. */
+
+@import '@fontsource-variable/archivo/wdth.css';
+
+:root {
+  /* Earth */
+  --laterite: #9c3b1e;
+  --laterite-deep: #6f2714;
+  --laterite-night: #3d160b;
+  --limonite: #b5532a;
+  --ochre: #c98a3c;
+  --ochre-pale: #f1dcb8;
+  --on-laterite: #fff4ec;
+  --on-laterite-2: #f4d2c0;
+
+  /* Shade net (ink) */
+  --net: #161816;
+  --net-2: #232622;
+  --net-3: #3a3e39;
+  --on-net: #eef0ec;
+  --on-net-2: #b9beb6;
+
+  /* Tag aluminium (reading ground) */
+  --alu-hi: #f4f5f2;
+  --alu: #e6e8e3;
+  --alu-lo: #d3d7cf;
+  --alu-line: #aeb4ab;
+  --ink: #161816;
+  --ink-2: #474c46;
+
+  /* Leaf: reserved for focus and the active element */
+  --leaf: #2f6a26;
+  --leaf-hi: #8fcf68;
+
+  --sea: #12505a;
+
+  --focus: var(--leaf);
+
+  --font: 'Archivo Variable', 'Archivo', 'Arial Narrow', system-ui, sans-serif;
+  /* Mine-signage stencil for display, headings and figures. */
+  --display: 'Big Shoulders Stencil Display Variable', 'Archivo Variable', 'Arial Narrow', sans-serif;
+
+  --gutter: clamp(16px, 4vw, 48px);
+  --wrap: 1240px;
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4.5rem;
+  --s-9: clamp(4.5rem, 9vw, 8rem);
+
+  --step: clamp(22px, 3vw, 40px); /* bench riser height */
+  --radius-tag: 7px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
+  scrollbar-color: var(--laterite) var(--alu);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--alu);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  line-height: 1.6;
+  font-stretch: 100%;
+  font-variation-settings: normal;
+  caret-color: var(--laterite);
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--laterite);
+  color: var(--on-laterite);
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  transition: text-decoration-color 160ms var(--ease-out), color 160ms var(--ease-out);
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.on-dark,
+.on-laterite {
+  --focus: var(--leaf-hi);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 800;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+p + p {
+  margin-top: 1em;
+}
+
+table {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------ Type */
+.display {
+  font-size: clamp(2.75rem, 1.2rem + 6.4vw, 6rem);
+  font-family: var(--display);
+  font-weight: 860;
+  line-height: 0.86;
+  letter-spacing: -0.012em;
+  text-transform: uppercase;
+}
+
+.h1 {
+  font-size: clamp(2.5rem, 1.5rem + 4.4vw, 5rem);
+  font-family: var(--display);
+  font-weight: 840;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.h2 {
+  font-size: clamp(2rem, 1.35rem + 2.8vw, 3.5rem);
+  font-family: var(--display);
+  font-weight: 820;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.h3 {
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
+  font-stretch: 82%;
+  font-weight: 760;
+  line-height: 1.1;
+}
+
+.lead {
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  line-height: 1.45;
+  font-stretch: 94%;
+  max-width: 46ch;
+}
+
+.stamp {
+  font-size: 0.75rem;
+  font-stretch: 125%;
+  font-weight: 640;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+
+.muted {
+  color: var(--ink-2);
+}
+
+.prose {
+  max-width: 68ch;
+}
+
+.prose p + p {
+  margin-top: 1em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.2em;
+  margin: 1em 0;
+}
+
+.prose li + li {
+  margin-top: 0.4em;
+}
+
+.prose h2 {
+  font-size: 1.75rem;
+  font-family: var(--display);
+  text-transform: uppercase;
+  margin: 2.2em 0 0.6em;
+}
+
+.prose .h2 {
+  margin-top: 0;
+  font-size: clamp(2rem, 1.35rem + 2.8vw, 3.5rem);
+  font-family: var(--display);
+}
+
+.prose h3 {
+  font-size: 1.25rem;
+  font-stretch: 85%;
+  margin: 1.8em 0 0.5em;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------ Layout */
+.wrap {
+  width: min(var(--wrap), 100% - 2 * var(--gutter));
+  margin-inline: auto;
+}
+
+.ground-alu {
+  background: var(--alu);
+  color: var(--ink);
+}
+
+.ground-alu-hi {
+  background: var(--alu-hi);
+  color: var(--ink);
+}
+
+.ground-laterite {
+  background: var(--laterite);
+  color: var(--on-laterite);
+  --focus: var(--leaf-hi);
+}
+
+.ground-deep {
+  background: var(--laterite-deep);
+  color: var(--on-laterite);
+  --focus: var(--leaf-hi);
+}
+
+.ground-net {
+  background: var(--net);
+  color: var(--on-net);
+  --focus: var(--leaf-hi);
+}
+
+.ground-laterite .muted,
+.ground-deep .muted {
+  color: var(--on-laterite-2);
+}
+
+.ground-net .muted {
+  color: var(--on-net-2);
+}
+
+.section {
+  padding-block: var(--s-9);
+}
+
+.section--tight {
+  padding-block: var(--s-8);
+}
+
+.section-head {
+  display: grid;
+  gap: var(--s-4);
+  margin-bottom: var(--s-7);
+  max-width: 60rem;
+}
+
+/* The fast version: one stamped line before the detail. */
+.fast {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  padding-top: var(--s-3);
+  border-top: 1px solid currentColor;
+  max-width: 62ch;
+}
+
+.fast .stamp {
+  flex: none;
+  opacity: 0.8;
+}
+
+/* ------------------------------------------------------------------ Buttons */
+.btn {
+  --btn-bg: var(--net);
+  --btn-fg: var(--on-net);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+  min-height: 48px;
+  padding: 0.85em 1.25em 0.8em;
+  border: 1.5px solid var(--btn-bg);
+  border-radius: 5px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-stretch: 118%;
+  font-weight: 680;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 180ms var(--ease-out), border-color 180ms var(--ease-out), color 180ms var(--ease-out), transform 180ms var(--ease-out);
+}
+
+.btn svg {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+  transition: transform 220ms var(--ease-out);
+}
+
+.btn:hover {
+  --btn-bg: var(--leaf);
+  --btn-fg: #fff;
+  text-decoration: none;
+}
+
+.btn:hover svg {
+  transform: translateX(3px);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--line {
+  background: transparent;
+  color: inherit;
+  border-color: currentColor;
+}
+
+.btn--line:hover {
+  background: var(--leaf);
+  border-color: var(--leaf);
+  color: #fff;
+}
+
+.btn--plate {
+  --btn-bg: var(--alu-hi);
+  --btn-fg: var(--ink);
+}
+
+.btn[aria-disabled='true'],
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+
+/* ------------------------------------------------------------------ Nursery tag */
+.tag {
+  position: relative;
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.7rem 0.95rem 0.75rem 2.15rem;
+  border: 1px solid var(--alu-line);
+  border-radius: var(--radius-tag);
+  background: var(--alu);
+  color: var(--ink);
+  text-decoration: none;
+  /* the punched hole: a real cut, the ground shows through */
+  -webkit-mask: radial-gradient(circle 0.33rem at 1.12rem 50%, transparent 96%, #000 100%);
+  mask: radial-gradient(circle 0.33rem at 1.12rem 50%, transparent 96%, #000 100%);
+}
+
+a.tag {
+  transition: transform 240ms var(--ease-out), background-color 200ms;
+}
+
+a.tag:hover {
+  transform: translateY(-2px) rotate(-0.4deg);
+  background: var(--alu-hi);
+}
+
+/* the mask clips anything outside the plate, so the focus ring sits inside it */
+a.tag:focus-visible {
+  outline: 3px solid var(--leaf);
+  outline-offset: -5px;
+}
+
+a.tag:hover .tag__name,
+a.tag[aria-current='page'] .tag__name {
+  color: var(--leaf);
+}
+
+.tag__no {
+  color: var(--ink-2);
+}
+
+.tag__name {
+  font-size: 1.05rem;
+  font-stretch: 78%;
+  font-weight: 780;
+  line-height: 1.1;
+  transition: color 160ms;
+}
+
+/* ------------------------------------------------------------------ Status as line form */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+}
+
+.status__line {
+  width: 1.9rem;
+  height: 0;
+  border-top: 3px solid currentColor;
+  flex: none;
+}
+
+.status--construction .status__line {
+  border-top-style: dashed;
+}
+
+.status--exploration .status__line {
+  border-top-style: dotted;
+  border-top-width: 3px;
+}
+
+.status--planned .status__line {
+  border-top-width: 1px;
+}
+
+/* ------------------------------------------------------------------ Provenance */
+.prov {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em 0.6em;
+  align-items: baseline;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+
+.ground-laterite .prov,
+.ground-deep .prov {
+  color: var(--on-laterite-2);
+}
+
+.ground-net .prov {
+  color: var(--on-net-2);
+}
+
+.prov .stamp {
+  font-size: 0.6875rem;
+}
+
+/* ------------------------------------------------------------------ Placeholder */
+.tbd {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25em 0.6em;
+  padding: 0.2em 0.55em;
+  border: 1.5px dashed var(--ochre);
+  border-radius: 4px;
+  background: var(--ochre-pale);
+  color: var(--laterite-night);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.tbd__mark {
+  font-size: 0.6875rem;
+  font-stretch: 125%;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--laterite-deep);
+  white-space: nowrap;
+}
+
+.tbd--block {
+  display: grid;
+  gap: 0.35rem;
+  padding: var(--s-4) var(--s-5);
+  max-width: 62ch;
+}
+
+.tbd--block strong {
+  font-stretch: 82%;
+  font-size: 1.05rem;
+}
+
+/* ------------------------------------------------------------------ Ledger (fact tables) */
+.ledger {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.ledger caption {
+  text-align: left;
+  padding-bottom: var(--s-3);
+}
+
+.ledger th,
+.ledger td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.7rem 1rem 0.7rem 0;
+  border-bottom: 1px solid var(--alu-line);
+}
+
+.ledger thead th {
+  border-bottom: 2px solid var(--ink);
+  padding-top: 0;
+}
+
+.ledger th[scope='row'] {
+  font-weight: 500;
+  color: var(--ink-2);
+  width: 38%;
+}
+
+.ledger td.num,
+.ledger th.num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ledger-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ------------------------------------------------------------------ Benches (section edges) */
+.bench {
+  display: block;
+  width: 100%;
+  height: calc(var(--step) * 3);
+  margin-top: calc(var(--step) * -3);
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.bench path.bench__fill {
+  fill: var(--bench-fill, var(--alu));
+}
+
+.bench path.bench__contour {
+  fill: none;
+  stroke: var(--bench-line, var(--ochre));
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Signature: the contour of a bench re-greens when its section is reached. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .bench path.bench__contour {
+      animation: regreen linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 50%;
+    }
+  }
+}
+
+@keyframes regreen {
+  from {
+    stroke: var(--bench-line, var(--ochre));
+    stroke-width: 2;
+  }
+  to {
+    stroke: var(--leaf-hi);
+    stroke-width: 3;
+  }
+}
+
+/* ------------------------------------------------------------------ Grids */
+.split {
+  display: grid;
+  gap: var(--s-7) var(--s-8);
+}
+
+@media (min-width: 900px) {
+  .split {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: start;
+  }
+  .split--even {
+    grid-template-columns: 1fr 1fr;
+  }
+  .split--wide-left {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+}
+
+.sticky-col {
+  position: sticky;
+  top: 6.5rem;
+}
+
+@media (max-width: 899px) {
+  .sticky-col {
+    position: static;
+  }
+}
+
+/* ------------------------------------------------------------------ Figure */
+.figure {
+  margin: 0;
+}
+
+.figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
+.figure figcaption {
+  margin-top: var(--s-3);
+}
+
+/* Bench-cut photo: the lower edge stepped like a pit wall. */
+.cut {
+  clip-path: polygon(0 0, 100% 0, 100% 78%, 72% 78%, 72% 88%, 40% 88%, 40% 100%, 0 100%);
+}
+
+/* ------------------------------------------------------------------ Lists */
+.rule-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--alu-line);
+}
+
+.rule-list > li {
+  padding: var(--s-4) 0;
+  border-bottom: 1px solid var(--alu-line);
+}
+
+.ground-laterite .rule-list,
+.ground-laterite .rule-list > li,
+.ground-deep .rule-list,
+.ground-deep .rule-list > li {
+  border-color: color-mix(in srgb, var(--on-laterite) 30%, transparent);
+}
+
+.ground-net .rule-list,
+.ground-net .rule-list > li {
+  border-color: var(--net-3);
+}
+
+.cols-2 {
+  columns: 2 16rem;
+  column-gap: var(--s-7);
+}
+
+.cols-2 > li {
+  break-inside: avoid;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip {
+  position: absolute;
+  left: var(--s-4);
+  top: -100px;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: var(--net);
+  color: var(--on-net);
+  border-radius: 4px;
+}
+
+.skip:focus {
+  top: var(--s-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

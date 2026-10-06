@@ -1,0 +1,14 @@
+---
+// Status is carried by line form, never colour: solid, dashed, dotted, hairline.
+import { ui, type Lang, type Status } from '../i18n';
+interface Props {
+  status: Status;
+  lang: Lang;
+  class?: string;
+}
+const { status, lang, class: cls } = Astro.props;
+---
+<span class:list={['status', `status--${status}`, 'stamp', cls]}>
+  <span class="status__line" aria-hidden="true"></span>
+  {ui[lang].status[status]}
+</span>

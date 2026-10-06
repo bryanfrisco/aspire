@@ -1,0 +1,394 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Bench from '../../components/Bench.astro';
+import Tag from '../../components/Tag.astro';
+import TBD from '../../components/TBD.astro';
+import Prov from '../../components/Prov.astro';
+import aerial from '../../assets/photos/site-aerial-matarape.jpg';
+import { company, timeline, vision, visionBody, values } from '../../data/company';
+import { projects } from '../../data/projects';
+import { href, langPaths, ui, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const title = L('Tentang kami', 'About us');
+
+const eras = [
+  { key: 'history', label: L('Sejarah kami', 'Our history') },
+  { key: 'present', label: L('Masa kini', 'Our present') },
+  { key: 'future', label: L('Masa depan', 'Our future') },
+] as const;
+
+const directors = [
+  L('Presiden Direktur / CEO', 'President Director / CEO'),
+  L('Wakil Presiden / COO', 'Vice President / COO'),
+  L('Direktur Keuangan / CFO', 'Chief Financial Officer'),
+  L('Direktur Teknologi Pertambangan / CMTO', 'Chief Mining Technology Officer'),
+  L('Direktur Strategi, Integritas & Keberlanjutan / CSISO', 'Chief Strategy, Integrity & Sustainability Officer'),
+];
+
+const rail = [
+  { id: 'profile', label: L('Profil', 'Profile') },
+  { id: 'purpose', label: L('Tujuan & visi', 'Purpose & vision') },
+  { id: 'values', label: L('Nilai', 'Values') },
+  { id: 'history', label: L('Perjalanan', 'Timeline') },
+  { id: 'structure', label: L('Struktur grup', 'Group structure') },
+  { id: 'leadership', label: L('Kepemimpinan', 'Leadership') },
+  { id: 'certifications', label: L('Sertifikasi', 'Certifications') },
+];
+---
+<Base lang={lang} title={title} description={L('Profil PT Anugerah Surya Pacific Resources (ASPIRE Stargate): sejarah sejak 2009, tujuan, visi, nilai, struktur grup Astra, dan kepemimpinan.', 'Profile of PT Anugerah Surya Pacific Resources (ASPIRE Stargate): history since 2009, purpose, vision, values, Astra group structure and leadership.')} rail={rail}>
+  <PageHead
+    lang={lang}
+    title={L('Dari tambang menjadi pengolah nikel', 'From a mine to a nickel processor')}
+    summary={L('Sejak 2009 di Konawe Utara; diakuisisi ASPIRE pada 2017 untuk membangun pengolahan nikel; anggota grup Astra sejak 2023.', 'In North Konawe since 2009; acquired by ASPIRE in 2017 to build nickel processing; a member of the Astra group since 2023.')}
+    crumbs={[{ label: title }]}
+    image={{ src: aerial, alt: L('Area tambang Stargate di tepi Teluk Matarape', 'The Stargate mine on Matarape Bay'), credit: L('Arsip ASPIRE', 'ASPIRE archive') }}
+  />
+
+  <section class="section ground-alu" id="profile">
+    <div class="wrap split">
+      <h2 class="h2">{company.legalName}</h2>
+      <div class="prose">
+        <p class="lead">{L('Aset paling berharga ASPIRE adalah aspirasi orang-orangnya.', 'ASPIRE’s most valuable assets are the aspirations of our people.')}</p>
+        <p>{L(
+          'Pada awalnya, Stargate merupakan usaha patungan setara antara Glencore dan konglomerat pertambangan terkemuka Indonesia. Operasi dimulai pada 2009 dan berlanjut dengan pengapalan bijih langsung (DSO) untuk ekspor hingga larangan ekspor bijih pada Januari 2014.',
+          'In the beginning, Stargate was an equal joint venture between Glencore and a prominent Indonesian mining conglomerate. It commenced operation in 2009 and continued with direct-shipping ore for export until the ore export ban in January 2014.',
+        )}</p>
+        <p>{L(
+          'Pada April 2017, grup ASPIRE mengakuisisi 100% saham Stargate dengan tujuan mengembangkan proyek nikel Stargate dari operasi tambang semata menjadi pengolahan nikel, untuk feronikel dan bahan baterai nikel energi baru.',
+          'In April 2017, the ASPIRE group acquired 100% of Stargate with the intention of developing the Stargate nickel project from a mining-only operation into nickel processing, for ferronickel and new-energy nickel battery materials.',
+        )}</p>
+        <p>{L(
+          'Pada 2023, ASPIRE diakuisisi oleh PT Danusa Tambang Nusantara, anak usaha PT United Tractors Tbk, dan menjadi anggota grup Astra.',
+          'In 2023, ASPIRE was acquired by PT Danusa Tambang Nusantara, a subsidiary of PT United Tractors Tbk, and became a member of the Astra group.',
+        )}</p>
+      </div>
+    </div>
+  </section>
+
+  <Bench fill="var(--laterite)" shape="b" />
+  <section class="section ground-laterite" id="purpose">
+    <div class="wrap purpose">
+      <div>
+        <figure class="purpose__fig">
+          <blockquote class="purpose__quote h1">{company.purpose[lang]}</blockquote>
+          <figcaption class="stamp muted">— {L('Tujuan kami', 'Our purpose')}</figcaption>
+        </figure>
+        <p class="lead">{L('Aspirasi kami adalah menenun mimpi menjadi kenyataan dengan penuh semangat, melalui perjalanan kita yang murni dan terbarukan dalam menciptakan masa kini yang lebih baik.', 'Our aspiration is to passionately weave dreams into reality through our pure and renewable journey together in creating a better present.')}</p>
+      </div>
+      <div class="purpose__vision">
+        <h2 class="h3">{L('Visi kami', 'Our vision')}</h2>
+        <p class="lead">{vision[lang]}</p>
+        <div class="prose">{visionBody[lang].map((p) => <p>{p}</p>)}</div>
+      </div>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu)" shape="c" />
+  <section class="section ground-alu" id="values">
+    <div class="wrap split">
+      <div class="section-head">
+        <h2 class="h2">{L('Nilai kami', 'Our values')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('Mari berkomitmen, dan mari mulai sekarang.', 'Let’s commit ourselves, and let’s start now.')}</span></p>
+      </div>
+      <ul class="rule-list values">
+        {values.map((v) => (
+          <li>
+            <h3 class="h3">{v.name[lang]}</h3>
+            <p>{v.body[lang]}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu-hi)" shape="a" />
+  <section class="section ground-alu-hi" id="history">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Sejarah, masa kini, masa depan', 'History, present and future')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('Lapis demi lapis, seperti profil laterit: dari DSO ke pengolahan, ke nikel hijau.', 'Layer by layer, like a laterite profile: from DSO to processing to green nickel.')}</span></p>
+      </div>
+      {eras.map((era) => (
+        <div class={`strata strata--${era.key}`}>
+          <p class="stamp strata__era">{era.label}</p>
+          <ol class="strata__list">
+            {timeline.filter((m) => m.era === era.key).map((m) => (
+              <li>
+                <span class="strata__year tnum">{m.year}</span>
+                <div class="strata__body">
+                  <h3 class="h3">{m.title[lang]}</h3>
+                  <p>{m.body[lang]}</p>
+                  {m.source && <Prov label={t.source} text={m.source[lang]} />}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <Bench fill="var(--alu)" shape="b" />
+  <section class="section ground-alu" id="structure">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Struktur grup', 'Group structure')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('ASPIRE berada di bawah PT Danusa Tambang Nusantara, anak usaha PT United Tractors Tbk dalam grup Astra.', 'ASPIRE sits under PT Danusa Tambang Nusantara, a subsidiary of PT United Tractors Tbk within the Astra group.')}</span></p>
+      </div>
+      <ol class="chain">
+        <li><Tag lang={lang} name="PT Astra International Tbk" stage={L('Grup', 'Group')} /></li>
+        <li><Tag lang={lang} name="PT United Tractors Tbk" stage={L('Anak usaha Astra', 'Astra subsidiary')} /></li>
+        <li><Tag lang={lang} name="PT Danusa Tambang Nusantara" stage={L('Anak usaha UT', 'UT subsidiary')} /></li>
+        <li class="chain__self"><Tag lang={lang} name={`${company.legalName} (ASPIRE)`} stage={L('Perusahaan induk', 'Holding company')} /></li>
+      </ol>
+      <ul class="chain__subs">
+        {[projects[0], projects[1], projects[2], projects[3]].map((p) => (
+          <li><Tag lang={lang} href={href(lang, `operations/${p.slug}/`)} code={p.code} name={p.entity} stage={p.stage[lang]} status={p.status} /></li>
+        ))}
+      </ul>
+      <TBD note={L('Persentase kepemilikan pada setiap tingkat dan entitas anak lainnya.', 'Ownership percentages at each level and any other subsidiaries.')} />
+    </div>
+  </section>
+
+  <Bench fill="var(--net)" line="var(--net-3)" shape="c" />
+  <section class="section ground-net" id="leadership">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Kepemimpinan', 'Leadership')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('Dewan Komisaris mengawasi; Direksi dan Komite Eksekutif mengelola usaha.', 'The Board of Commissioners supervises; the Board of Directors and Executive Committee manage the business.')}</span></p>
+      </div>
+      <div class="boards">
+        <div>
+          <h3 class="h3">{L('Dewan Komisaris', 'Board of Commissioners')}</h3>
+          <ul class="rule-list plaques">
+            {[L('Presiden Komisaris', 'President Commissioner'), L('Komisaris', 'Commissioner'), L('Komisaris Independen', 'Independent Commissioner')].map((r) => (
+              <li><span class="stamp muted">{r}</span><TBD note={L('Nama dan foto', 'Name and portrait')} /></li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3 class="h3">{L('Direksi & Komite Eksekutif', 'Directors & Executive Committee')}</h3>
+          <ul class="rule-list plaques">
+            {directors.map((r) => (
+              <li><span class="stamp muted">{r}</span><TBD note={L('Nama dan foto', 'Name and portrait')} /></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu)" shape="a" />
+  <section class="section ground-alu" id="certifications">
+    <div class="wrap split">
+      <h2 class="h2">{L('Sertifikasi & penghargaan', 'Certifications & awards')}</h2>
+      <div class="cert">
+        <ul class="rule-list">
+          <li><strong>SMKP Minerba</strong> <span class="muted">· {L('Sistem Manajemen Keselamatan Pertambangan', 'Mining Safety Management System')}</span><br /><TBD note={L('Status dan tahun audit', 'Status and audit year')} /></li>
+          <li><strong>ISO 14001</strong> <span class="muted">· {L('Manajemen lingkungan', 'Environmental management')}</span><br /><TBD note={L('Konfirmasi apakah dimiliki', 'Confirm whether held')} /></li>
+          <li><strong>ISO 45001</strong> <span class="muted">· {L('Manajemen K3', 'Occupational health & safety management')}</span><br /><TBD note={L('Konfirmasi apakah dimiliki', 'Confirm whether held')} /></li>
+          <li><strong>PROPER</strong> <span class="muted">· {L('Peringkat kinerja lingkungan KLHK', 'Ministry of Environment performance rating')}</span><br /><TBD note={L('Peringkat terbaru', 'Latest rating')} /></li>
+          <li><strong>{L('Penghargaan', 'Awards')}</strong><br /><TBD note={L('Penghargaan K3, lingkungan, atau praktik pertambangan yang baik', 'Safety, environmental or good mining practice awards')} /></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .purpose {
+    display: grid;
+    gap: var(--s-8);
+  }
+
+  @media (min-width: 1000px) {
+    .purpose {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: end;
+    }
+  }
+
+  .purpose > div {
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .purpose__fig {
+    margin: 0;
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  .purpose__quote {
+    margin: 0;
+    max-width: 18ch;
+    font-size: clamp(2.25rem, 1.4rem + 3.6vw, 4.5rem);
+  }
+
+  .purpose__vision {
+    padding-top: var(--s-4);
+    border-top: 3px solid var(--on-laterite);
+  }
+
+  .values > li {
+    display: grid;
+    gap: 0.4rem;
+    padding-block: var(--s-5);
+  }
+
+  .values p {
+    max-width: 58ch;
+  }
+
+  /* Timeline as strata: each era a layer, each year a bench lower. */
+  .strata {
+    display: grid;
+    gap: var(--s-4);
+    padding: var(--s-5) 0 var(--s-6);
+    border-top: 3px solid var(--ink);
+  }
+
+  .strata--present {
+    border-top-style: solid;
+    border-top-color: var(--laterite);
+  }
+
+  .strata--future {
+    border-top-style: dashed;
+    border-top-color: var(--ink);
+  }
+
+  .strata__era {
+    color: var(--ink-2);
+  }
+
+  .strata__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .strata__list li {
+    display: grid;
+    gap: var(--s-2) var(--s-6);
+  }
+
+  .strata__year {
+    font-size: clamp(2.5rem, 1.8rem + 3vw, 4.25rem);
+    font-family: var(--display);
+    font-weight: 850;
+    line-height: 0.85;
+    color: var(--laterite);
+  }
+
+  .strata--future .strata__year {
+    color: var(--ink);
+  }
+
+  .strata__body {
+    display: grid;
+    gap: 0.4rem;
+    max-width: 62ch;
+  }
+
+  @media (min-width: 900px) {
+    .strata {
+      grid-template-columns: 11rem 1fr;
+    }
+    .strata__list li {
+      grid-template-columns: 9rem 1fr;
+    }
+    .strata__list li:nth-child(2) {
+      margin-left: 2rem;
+    }
+    .strata__list li:nth-child(3) {
+      margin-left: 4rem;
+    }
+    .strata__list li:nth-child(4) {
+      margin-left: 6rem;
+    }
+  }
+
+  .chain {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-4);
+    max-width: 34rem;
+  }
+
+  .chain li {
+    position: relative;
+  }
+
+  .chain li + li::before {
+    content: '';
+    position: absolute;
+    left: 1.1rem;
+    top: calc(var(--s-4) * -1);
+    height: var(--s-4);
+    border-left: 2px solid var(--ink);
+  }
+
+  @media (min-width: 720px) {
+    .chain li:nth-child(2) { margin-left: 2rem; }
+    .chain li:nth-child(3) { margin-left: 4rem; }
+    .chain li:nth-child(4) { margin-left: 6rem; }
+    .chain li + li::before { left: -0.9rem; }
+  }
+
+  .chain__self :global(.tag) {
+    border-color: var(--ink);
+  }
+
+  .chain__subs {
+    list-style: none;
+    margin: var(--s-5) 0 var(--s-6);
+    padding: var(--s-5) 0 0;
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    border-top: 2px solid var(--ink);
+  }
+
+  @media (min-width: 720px) {
+    .chain__subs {
+      margin-left: 8rem;
+    }
+  }
+
+  .boards {
+    display: grid;
+    gap: var(--s-7);
+  }
+
+  @media (min-width: 900px) {
+    .boards {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .boards > div {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+  }
+
+  .plaques > li {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+  }
+
+  .cert li {
+    line-height: 1.7;
+  }
+</style>

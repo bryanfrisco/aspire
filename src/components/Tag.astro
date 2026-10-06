@@ -1,0 +1,48 @@
+---
+// Stamped aluminium nursery tag: number, entity code, name, stage, status.
+import Status from './Status.astro';
+import type { Lang, Status as S } from '../i18n';
+interface Props {
+  lang: Lang;
+  no?: string;
+  code?: string;
+  name: string;
+  stage?: string;
+  status?: S;
+  href?: string;
+  current?: boolean;
+  class?: string;
+}
+const { lang, no, code, name, stage, status, href, current, class: cls } = Astro.props;
+const El = href ? 'a' : 'div';
+---
+<El class:list={['tag', cls]} href={href} aria-current={current ? 'page' : undefined}>
+  {(no || code) && (
+    <span class="tag__no stamp">
+      {no && <span>No. {no}</span>}
+      {no && code && <span aria-hidden="true"> · </span>}
+      {code && <span>{code}</span>}
+    </span>
+  )}
+  <span class="tag__name">{name}</span>
+  {(stage || status) && (
+    <span class="tag__meta">
+      {stage && <span class="stamp tag__stage">{stage}</span>}
+      {status && <Status status={status} lang={lang} />}
+    </span>
+  )}
+</El>
+
+<style>
+  .tag__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.9rem;
+    align-items: center;
+    margin-top: 0.15rem;
+    color: var(--ink-2);
+  }
+  .tag__meta :global(.status) {
+    color: var(--ink);
+  }
+</style>

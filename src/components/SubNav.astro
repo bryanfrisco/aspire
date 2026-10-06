@@ -1,0 +1,36 @@
+---
+// Sibling pages inside one section, set as a row of tags.
+import Tag from './Tag.astro';
+import { nav, href, type Lang } from '../i18n';
+interface Props {
+  lang: Lang;
+  parent: string;
+}
+const { lang, parent } = Astro.props;
+const item = nav.find((n) => n.path === parent);
+const path = Astro.url.pathname;
+---
+{item?.children && (
+  <nav class="subnav" aria-label={item.label[lang]}>
+    <ul>
+      {item.children.map((c) => (
+        <li><Tag lang={lang} href={href(lang, c.path)} name={c.label[lang]} current={path === href(lang, c.path)} /></li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<style>
+  .subnav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .subnav :global(.tag[aria-current='page']) {
+    border-color: var(--ink);
+  }
+</style>

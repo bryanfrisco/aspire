@@ -1,0 +1,42 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import TBD from '../../components/TBD.astro';
+import { company } from '../../data/company';
+import { langPaths, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const title = L('Syarat penggunaan', 'Terms of use');
+---
+<Base lang={lang} title={title} description={L('Syarat penggunaan situs web ASPIRE Stargate, termasuk pernyataan mengenai informasi berwawasan ke depan.', 'Terms of use for the ASPIRE Stargate website, including the forward-looking statements notice.')}>
+  <PageHead lang={lang} title={title} summary={L('Ketentuan penggunaan situs ini dan informasi di dalamnya.', 'Terms for using this website and the information on it.')} crumbs={[{ label: title }]} />
+  <section class="section ground-alu">
+    <div class="wrap legal">
+      <TBD block title={L('Draf, perlu tinjauan hukum', 'Draft, requires legal review')} note={L('Teks ini adalah draf awal dan harus ditinjau oleh tim hukum sebelum dipublikasikan.', 'This text is an initial draft and must be reviewed by legal counsel before publication.')} />
+      <div class="prose">
+        <h2>{L('Informasi berwawasan ke depan', 'Forward-looking statements')}</h2>
+        <p>{L('Situs ini memuat pernyataan mengenai rencana, target kapasitas, jadwal proyek, dan estimasi sumber daya serta cadangan. Pernyataan tersebut didasarkan pada asumsi saat ini dan mengandung risiko serta ketidakpastian; hasil aktual dapat berbeda secara material. Estimasi sumber daya dan cadangan yang dikutip berasal dari laporan pada tanggal yang disebutkan dan dapat berubah.', 'This website contains statements about plans, capacity targets, project schedules and resource and reserve estimates. These are based on current assumptions and involve risks and uncertainties; actual results may differ materially. Resource and reserve estimates are quoted from reports as at the dates stated and may change.')}</p>
+        <h2>{L('Bukan penawaran', 'Not an offer')}</h2>
+        <p>{L('Informasi di situs ini bukan merupakan penawaran atau ajakan untuk membeli atau menjual efek atau produk apa pun.', 'Nothing on this website is an offer or solicitation to buy or sell any securities or products.')}</p>
+        <h2>{L('Hak kekayaan intelektual', 'Intellectual property')}</h2>
+        <p>{L(`Seluruh konten, foto, dan merek di situs ini adalah milik ${company.legalName} atau pemberi lisensinya. Logo Astra digunakan sebagai penanda keanggotaan grup.`, `All content, photographs and marks on this website belong to ${company.legalName} or its licensors. The Astra mark is used to show group membership.`)}</p>
+        <h2>{L('Tautan pihak ketiga', 'Third-party links')}</h2>
+        <p>{L('Kami tidak bertanggung jawab atas isi situs pihak ketiga yang ditautkan dari situs ini.', 'We are not responsible for the content of third-party websites linked from this site.')}</p>
+        <h2>{L('Hukum yang berlaku', 'Governing law')}</h2>
+        <p>{L('Syarat ini tunduk pada hukum Republik Indonesia.', 'These terms are governed by the laws of the Republic of Indonesia.')}</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .legal .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+</style>

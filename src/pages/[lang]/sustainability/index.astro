@@ -1,0 +1,268 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import SubNav from '../../../components/SubNav.astro';
+import Bench from '../../../components/Bench.astro';
+import TBD from '../../../components/TBD.astro';
+import Prov from '../../../components/Prov.astro';
+import MetricTable from '../../../components/MetricTable.astro';
+import Icon from '../../../components/Icon.astro';
+import haul from '../../../assets/photos/haul-road.png';
+import { href, langPaths, ui, type Lang } from '../../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const sus = L('Keberlanjutan', 'Sustainability');
+const title = L('Lingkungan & ESG', 'Environment & ESG');
+
+const rail = [
+  { id: 'approach', label: L('Pendekatan', 'Approach') },
+  { id: 'energy', label: L('Energi & iklim', 'Energy & climate') },
+  { id: 'environment', label: L('Pengelolaan lingkungan', 'Environmental management') },
+  { id: 'reclamation', label: L('Reklamasi', 'Reclamation') },
+  { id: 'data', label: L('Data ESG', 'ESG data') },
+];
+---
+<Base lang={lang} title={title} description={L('Pendekatan ESG ASPIRE Stargate: listrik dari jaringan PLN, pengelolaan lingkungan, reklamasi pascatambang, persemaian, dan data kinerja.', 'ASPIRE Stargate’s ESG approach: grid power from PLN, environmental management, post-mining reclamation, our nursery and performance data.')} rail={rail}>
+  <PageHead
+    lang={lang}
+    title={L('Nikel hijau dimulai dari tanah', 'Green nickel starts with the ground')}
+    summary={L('Visi kami adalah menjadi produsen nikel hijau kelas dunia, dengan komitmen tertinggi pada tanggung jawab etis, sosial, dan lingkungan.', 'Our vision is to become a world-class green nickel producer, with supreme commitment to ethical, social and environmental responsibility.')}
+    crumbs={[{ label: sus, path: 'sustainability/' }, { label: title }]}
+    image={{ src: haul, alt: L('Area tambang laterit berbatasan dengan hutan', 'Laterite mine area bordering forest'), credit: L('Blok Selatan · arsip ASPIRE', 'South Block · ASPIRE archive') }}
+  >
+    <SubNav lang={lang} parent="sustainability/" />
+  </PageHead>
+
+  <section class="section ground-alu" id="approach">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Pendekatan kami', 'Our approach')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('Tiga pilar, satu syarat: setiap klaim harus didukung data.', 'Three pillars, one condition: every claim backed by data.')}</span></p>
+      </div>
+      <ol class="pillars">
+        <li>
+          <span class="pillars__letter" aria-hidden="true">E</span>
+          <h3 class="h3">{L('Lingkungan', 'Environment')}</h3>
+          <p>{L('Listrik dari jaringan, bukan PLTU baru; pengelolaan air dan sedimen; reklamasi progresif dan persemaian di lokasi.', 'Grid power instead of a new coal plant; water and sediment management; progressive reclamation and an on-site nursery.')}</p>
+        </li>
+        <li>
+          <span class="pillars__letter" aria-hidden="true">S</span>
+          <h3 class="h3">{L('Sosial', 'Social')}</h3>
+          <p>{L('Keselamatan setiap pekerja dan kontraktor; pemberdayaan desa di sekitar operasi; tenaga kerja dan pemasok lokal.', 'The safety of every worker and contractor; empowerment of the villages around our operations; local workforce and suppliers.')}</p>
+          <p class="pillars__links"><a href={href(lang, 'sustainability/health-safety/')}>K3</a> · <a href={href(lang, 'sustainability/community/')}>{L('Masyarakat', 'Community')}</a></p>
+        </li>
+        <li>
+          <span class="pillars__letter" aria-hidden="true">G</span>
+          <h3 class="h3">{L('Tata kelola', 'Governance')}</h3>
+          <p>{L('Transparansi, akuntabilitas, dan independensi; izin dalam keadaan baik; sistem pelaporan pelanggaran.', 'Transparency, accountability and independence; permits in good standing; a whistleblowing system.')}</p>
+          <p class="pillars__links"><a href={href(lang, 'governance/')}>{L('Tata kelola', 'Governance')}</a></p>
+        </li>
+      </ol>
+      <TBD block title={L('Kebijakan keberlanjutan', 'Sustainability policy')} note={L('Unggah kebijakan keberlanjutan yang disetujui dan topik material (penilaian materialitas).', 'Upload the approved sustainability policy and material topics (materiality assessment).')} />
+    </div>
+  </section>
+
+  <Bench fill="var(--net)" line="var(--net-3)" shape="b" />
+  <section class="section ground-net" id="energy">
+    <div class="wrap split">
+      <div>
+        <h2 class="h2">{L('Listrik yang lebih hijau untuk smelter', 'Greener power for the smelter')}</h2>
+      </div>
+      <div class="prose energy">
+        <p class="lead">{L('Alih-alih membangun PLTU beremisi karbon tinggi, Stargate bekerja sama dengan PLN: membeli listrik dari jaringan Sulawesi dan berinvestasi bersama membangun jaringan transmisi ke kawasan industri.', 'Instead of building a high-carbon coal power plant, Stargate works with PLN: buying power from the Sulawesi grid and co-investing in the transmission line to the industrial park.')}</p>
+        <ul class="rule-list">
+          <li><strong>2021</strong> · {L('Perjanjian jual beli listrik dengan PLN', 'Power purchase agreement with PLN')}</li>
+          <li><strong>PLTGU 450 MW</strong> · {L('Rencana pembangkit gas PLN di area Stargate', 'PLN’s planned gas-fired plant in the Stargate area')}</li>
+          <li><strong>{L('Tahap II–III', 'Phase II–III')}</strong> · {L('Investasi ladang surya dan angin', 'Solar and wind farm investments')}</li>
+        </ul>
+        <Prov label={t.source} text="aspire.id" />
+        <TBD note={L('Intensitas emisi (tCO₂e per ton produk) dan bauran energi aktual.', 'Emissions intensity (tCO₂e per ton of product) and actual energy mix.')} />
+      </div>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu)" shape="c" />
+  <section class="section ground-alu" id="environment">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Pengelolaan lingkungan', 'Environmental management')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('Izin lingkungan dan IPPKH kehutanan untuk kedua IUP telah diperoleh; seluruh kewajiban kepada pemerintah dalam keadaan baik.', 'Environmental permits and forestry IPPKH permits for both IUPs are in place; all obligations to the government are in good standing.')}</span></p>
+      </div>
+      <ul class="env">
+        <li>
+          <h3 class="h3">AMDAL &amp; RKL-RPL</h3>
+          <p>{L('Analisis dampak lingkungan serta rencana pengelolaan dan pemantauan lingkungan untuk tambang, jeti, dan smelter.', 'Environmental impact assessment and environmental management and monitoring plans for the mine, jetties and smelter.')}</p>
+          <TBD note={L('Nomor dan tanggal persetujuan lingkungan; ringkasan pemantauan semester.', 'Environmental approval numbers and dates; semi-annual monitoring summary.')} />
+        </li>
+        <li>
+          <h3 class="h3">{L('Air & sedimen', 'Water & sediment')}</h3>
+          <p>{L('Pengendalian limpasan dari bench dan jalan angkut sebelum mencapai sungai dan Teluk Matarape.', 'Controlling run-off from benches and haul roads before it reaches rivers and Matarape Bay.')}</p>
+          <TBD note={L('Jumlah kolam pengendapan, titik pantau, dan hasil uji kualitas air.', 'Number of settling ponds, monitoring points and water quality results.')} />
+        </li>
+        <li>
+          <h3 class="h3">{L('Keanekaragaman hayati', 'Biodiversity')}</h3>
+          <p>{L('Perlindungan hutan di luar area bukaan dan spesies endemik Sulawesi.', 'Protecting forest outside the open area and Sulawesi’s endemic species.')}</p>
+          <TBD note={L('Survei flora-fauna dan rencana pengelolaan keanekaragaman hayati.', 'Flora and fauna survey and biodiversity management plan.')} />
+        </li>
+        <li>
+          <h3 class="h3">{L('Limbah', 'Waste')}</h3>
+          <p>{L('Pengelolaan limbah B3 dan non-B3 di lokasi tambang dan smelter, termasuk slag RKEF.', 'Managing hazardous and non-hazardous waste at the mine and smelter, including RKEF slag.')}</p>
+          <TBD note={L('Rencana pengelolaan slag dan limbah B3.', 'Slag and hazardous waste management plan.')} />
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <Bench fill="var(--laterite)" shape="a" />
+  <section class="section ground-laterite" id="reclamation">
+    <div class="wrap split">
+      <div>
+        <h2 class="h2">{L('Reklamasi & pascatambang', 'Reclamation & post-mining')}</h2>
+      </div>
+      <div class="prose recl">
+        <p class="lead">{L('Lokasi tambang memiliki persemaian untuk rehabilitasi dan reforestasi. Rehabilitasi tambang merupakan bagian dari lingkup jasa PT RSL.', 'The mine site runs a nursery for rehabilitation and reforestation. Mine rehabilitation is part of PT RSL’s scope of services.')}</p>
+        <p>{L('Tahapan reklamasi menurut ketentuan ESDM', 'Reclamation stages under ESDM rules')}</p>
+        <ol class="recl__steps">
+          <li><span class="stamp">{L('Tanah pucuk', 'Topsoil')}</span>{L('Disimpan saat pembukaan lahan untuk digunakan kembali.', 'Stockpiled when land is opened, for reuse.')}</li>
+          <li><span class="stamp">{L('Penataan', 'Reshaping')}</span>{L('Lereng bench ditata dan distabilkan.', 'Bench slopes are reshaped and stabilised.')}</li>
+          <li><span class="stamp">{L('Penanaman', 'Planting')}</span>{L('Tanaman penutup dan bibit dari persemaian.', 'Cover crops and seedlings from the nursery.')}</li>
+          <li><span class="stamp">{L('Pemantauan', 'Monitoring')}</span>{L('Tingkat tumbuh dan keberhasilan reklamasi.', 'Survival rates and reclamation success.')}</li>
+        </ol>
+        <TBD block title={L('Data reklamasi', 'Reclamation data')} note={L('Luas lahan dibuka vs. direklamasi, jumlah bibit, spesies, tingkat tumbuh, dan status jaminan reklamasi dan pascatambang.', 'Area opened vs. reclaimed, seedlings, species, survival rates and status of reclamation and post-mining guarantees.')} />
+      </div>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu-hi)" shape="b" />
+  <section class="section ground-alu-hi" id="data">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Data kinerja ESG', 'ESG performance data')}</h2>
+      </div>
+      <MetricTable
+        caption={L('Indikator lingkungan', 'Environmental indicators')}
+        metricLabel={L('Indikator', 'Indicator')}
+        unitLabel={L('Satuan', 'Unit')}
+        years={['2024', '2025']}
+        rows={[
+          { label: L('Emisi GRK (cakupan 1 + 2)', 'GHG emissions (scope 1 + 2)'), unit: 'tCO₂e' },
+          { label: L('Konsumsi energi', 'Energy consumption'), unit: 'GJ' },
+          { label: L('Pengambilan air', 'Water withdrawal'), unit: 'm³' },
+          { label: L('Lahan terganggu (kumulatif)', 'Land disturbed (cumulative)'), unit: 'ha' },
+          { label: L('Lahan direklamasi (kumulatif)', 'Land reclaimed (cumulative)'), unit: 'ha' },
+          { label: L('Bibit ditanam', 'Seedlings planted'), unit: L('batang', 'trees') },
+          { label: L('Limbah B3 dikelola', 'Hazardous waste managed'), unit: 't' },
+          { label: L('Insiden lingkungan signifikan', 'Significant environmental incidents'), unit: L('kasus', 'cases') },
+        ]}
+        note={L('Isi nilai tahunan dari laporan keberlanjutan atau RKL-RPL.', 'Fill annual values from the sustainability report or RKL-RPL.')}
+      />
+      <p class="data__link"><a class="btn btn--line" href={href(lang, 'investors/#reports')}>{L('Laporan keberlanjutan', 'Sustainability reports')} <Icon name="arrow" /></a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pillars {
+    list-style: none;
+    margin: 0 0 var(--s-7);
+    padding: 0;
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  @media (min-width: 900px) {
+    .pillars {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-7);
+    }
+    .pillars li:nth-child(2) {
+      margin-top: var(--step);
+    }
+    .pillars li:nth-child(3) {
+      margin-top: calc(var(--step) * 2);
+    }
+  }
+
+  .pillars li {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+    padding-top: var(--s-3);
+    border-top: 3px solid var(--ink);
+  }
+
+  .pillars__letter {
+    font-size: clamp(4rem, 3rem + 4vw, 7rem);
+    font-family: var(--display);
+    font-weight: 880;
+    line-height: 0.8;
+    color: var(--laterite);
+  }
+
+  .pillars__links {
+    font-weight: 650;
+  }
+
+  .energy {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  .energy .rule-list li {
+    padding: var(--s-3) 0;
+  }
+
+  .env {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-6) var(--s-7);
+  }
+
+  @media (min-width: 900px) {
+    .env {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .env li {
+    display: grid;
+    gap: var(--s-3);
+    justify-items: start;
+    align-content: start;
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--alu-line);
+  }
+
+  .recl {
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .recl__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+
+  .recl__steps li {
+    display: grid;
+    gap: 0.25rem;
+    padding: var(--s-3) 0 var(--s-3) var(--s-4);
+    border-top: 1px solid color-mix(in srgb, var(--on-laterite) 30%, transparent);
+  }
+
+  .recl__steps li:nth-child(2) { margin-left: 1.5rem; }
+  .recl__steps li:nth-child(3) { margin-left: 3rem; }
+  .recl__steps li:nth-child(4) { margin-left: 4.5rem; border-top: 3px solid var(--on-laterite); }
+
+  .data__link {
+    margin-top: var(--s-6);
+  }
+</style>

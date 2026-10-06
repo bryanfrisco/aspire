@@ -1,0 +1,153 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import SubNav from '../../../components/SubNav.astro';
+import Bench from '../../../components/Bench.astro';
+import TBD from '../../../components/TBD.astro';
+import MetricTable from '../../../components/MetricTable.astro';
+import Icon from '../../../components/Icon.astro';
+import bay from '../../../assets/photos/bay-stockpiles.jpg';
+import { company } from '../../../data/company';
+import { href, langPaths, type Lang } from '../../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const sus = L('Keberlanjutan', 'Sustainability');
+const title = L('Masyarakat', 'Community');
+
+// The eight PPM programme areas set by the Ministry of Energy and Mineral Resources.
+const pillars = [
+  L('Pendidikan', 'Education'),
+  L('Kesehatan', 'Health'),
+  L('Tingkat pendapatan riil', 'Real income'),
+  L('Kemandirian ekonomi', 'Economic independence'),
+  L('Sosial dan budaya', 'Social and culture'),
+  L('Lingkungan', 'Environment'),
+  L('Kelembagaan komunitas', 'Community institutions'),
+  L('Infrastruktur', 'Infrastructure'),
+];
+
+const rail = [
+  { id: 'approach', label: L('Pendekatan', 'Approach') },
+  { id: 'programmes', label: L('Program PPM', 'PPM programmes') },
+  { id: 'local', label: L('Tenaga kerja lokal', 'Local workforce') },
+  { id: 'grievance', label: L('Pengaduan', 'Grievances') },
+];
+---
+<Base lang={lang} title={title} description={L('Program pengembangan dan pemberdayaan masyarakat (PPM) ASPIRE Stargate di Konawe Utara, tenaga kerja lokal, dan mekanisme pengaduan.', 'ASPIRE Stargate community development and empowerment (PPM) in North Konawe, local workforce and grievance mechanism.')} rail={rail}>
+  <PageHead
+    lang={lang}
+    title={L('Tumbuh bersama Konawe Utara', 'Growing with North Konawe')}
+    summary={L(`Program pengembangan dan pemberdayaan masyarakat (PPM) bersama desa-desa di sekitar operasi kami di Kecamatan ${company.site.district}.`, `Community development and empowerment (PPM) with the villages around our operations in ${company.site.district} District.`)}
+    crumbs={[{ label: sus, path: 'sustainability/' }, { label: title }]}
+    image={{ src: bay, alt: L('Permukiman pesisir dan hutan di tepi Teluk Matarape', 'Coastal settlement and forest on Matarape Bay'), credit: L('Teluk Matarape · arsip ASPIRE', 'Matarape Bay · ASPIRE archive') }}
+  >
+    <SubNav lang={lang} parent="sustainability/" />
+  </PageHead>
+
+  <section class="section ground-alu" id="approach">
+    <div class="wrap split">
+      <h2 class="h2">{L('Tetangga, bukan penonton', 'Neighbours, not bystanders')}</h2>
+      <div class="prose approach">
+        <p class="lead">{L('Kami ingin memperkaya dan merawat kualitas hidup orang-orang dan sumber daya alam di sekitar kami, dan menyiapkan masa depan yang berhasil bagi generasi berikutnya.', 'We aim to enrich and nourish the quality of life of the people and natural resources around us, and to secure a successful future for the next generation.')}</p>
+        <p>{L('Program PPM disusun bersama pemerintah daerah dan masyarakat sesuai Rencana Induk PPM Provinsi Sulawesi Tenggara.', 'PPM programmes are planned with local government and communities in line with the Southeast Sulawesi PPM master plan.')}</p>
+        <TBD block title={L('Rencana Induk & desa mitra', 'Master plan & partner villages')} note={L('Daftar desa mitra, tahun rencana induk PPM, dan anggaran tahunan.', 'List of partner villages, PPM master plan year and annual budget.')} />
+      </div>
+    </div>
+  </section>
+
+  <Bench fill="var(--laterite)" shape="b" />
+  <section class="section ground-laterite" id="programmes">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Delapan bidang program PPM', 'Eight PPM programme areas')}</h2>
+        <p class="fast"><span class="stamp" aria-hidden="true">—</span><span>{L('Sesuai pedoman Kementerian ESDM.', 'As set by the Ministry of Energy and Mineral Resources.')}</span></p>
+      </div>
+      <ol class="pp">
+        {pillars.map((p) => (
+          <li>
+            <h3 class="h3">{p}</h3>
+            <TBD note={L('Program, penerima manfaat, dan cerita', 'Programme, beneficiaries and story')} />
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu-hi)" shape="c" />
+  <section class="section ground-alu-hi" id="local">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Tenaga kerja & pemasok lokal', 'Local workforce & suppliers')}</h2>
+      </div>
+      <MetricTable
+        caption={L('Dampak ekonomi lokal', 'Local economic impact')}
+        metricLabel={L('Indikator', 'Indicator')}
+        unitLabel={L('Satuan', 'Unit')}
+        years={['2024', '2025']}
+        rows={[
+          { label: L('Karyawan dari Sulawesi Tenggara', 'Employees from Southeast Sulawesi'), unit: '%' },
+          { label: L('Karyawan dari Konawe Utara', 'Employees from North Konawe'), unit: '%' },
+          { label: L('Belanja ke pemasok lokal', 'Spend with local suppliers'), unit: 'Rp' },
+          { label: L('Anggaran PPM terealisasi', 'PPM budget realised'), unit: 'Rp' },
+          { label: L('Penerima manfaat program', 'Programme beneficiaries'), unit: L('orang', 'people') },
+        ]}
+        note={L('Isi data tahunan dari laporan PPM.', 'Fill annual data from the PPM report.')}
+      />
+    </div>
+  </section>
+
+  <Bench fill="var(--net)" line="var(--net-3)" shape="a" />
+  <section class="section ground-net" id="grievance">
+    <div class="wrap split">
+      <h2 class="h2">{L('Sampaikan masukan atau keluhan', 'Raise feedback or a grievance')}</h2>
+      <div class="prose grv">
+        <p class="lead">{L('Warga dan pemangku kepentingan dapat menyampaikan masukan, pertanyaan, atau keluhan tentang operasi kami. Setiap laporan dicatat dan ditanggapi.', 'Residents and stakeholders can raise feedback, questions or grievances about our operations. Every report is logged and answered.')}</p>
+        <TBD block title={L('Saluran pengaduan masyarakat', 'Community grievance channel')} note={L('Nomor WhatsApp/telepon, petugas hubungan masyarakat di lokasi, dan waktu tanggapan.', 'WhatsApp/phone number, on-site community relations officer and response time.')} />
+        <div class="actions">
+          <a class="btn btn--plate" href={href(lang, 'contact/')}>{L('Hubungi kami', 'Contact us')} <Icon name="arrow" /></a>
+          <a class="btn btn--line" href={href(lang, 'governance/#wbs')}>{L('Laporkan pelanggaran', 'Report misconduct')}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .approach,
+  .grv {
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .pp {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-5) var(--s-6);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  }
+
+  .pp li {
+    display: grid;
+    gap: var(--s-3);
+    justify-items: start;
+    align-content: start;
+    padding-top: var(--s-3);
+    border-top: 3px solid var(--on-laterite);
+  }
+
+  .pp li:nth-child(4n + 2) { margin-top: calc(var(--step) * 0.5); }
+  .pp li:nth-child(4n + 3) { margin-top: var(--step); }
+  .pp li:nth-child(4n + 4) { margin-top: calc(var(--step) * 1.5); }
+
+  @media (max-width: 719px) {
+    .pp li { margin-top: 0 !important; }
+  }
+
+  .pp :global(.tbd) {
+    font-size: 0.8125rem;
+  }
+</style>

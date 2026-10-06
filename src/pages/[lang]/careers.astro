@@ -1,0 +1,180 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Bench from '../../components/Bench.astro';
+import TBD from '../../components/TBD.astro';
+import Icon from '../../components/Icon.astro';
+import team from '../../assets/photos/team-faces.jpg';
+import excavator from '../../assets/photos/excavator-loading.jpg';
+import { company, values } from '../../data/company';
+import { href, langPaths, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const lang = Astro.params.lang as Lang;
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const title = L('Karier', 'Careers');
+---
+<Base lang={lang} title={title} description={L('Berkarier di ASPIRE Stargate: tambang, smelter, dan kawasan industri nikel di Konawe Utara. Lamar melalui portal karier atau email.', 'Build a career at ASPIRE Stargate: nickel mining, smelting and an industrial park in North Konawe. Apply through our careers portal or by email.')} image={team}>
+  <PageHead
+    lang={lang}
+    title={L('Bergabunglah. Jadilah ASPIRE.', 'Join us. Be ASPIRE.')}
+    summary={L('Mari memberi dampak baik bagi dunia. Mari wujudkan aspirasi kita.', 'Let’s make good impact to the world. Let’s achieve our aspirations.')}
+    crumbs={[{ label: title }]}
+    image={{ src: excavator, alt: L('Pengawas tambang di lokasi Blok Selatan', 'A mine supervisor at the South Block'), credit: L('Blok Selatan · arsip ASPIRE', 'South Block · ASPIRE archive') }}
+  >
+    <div class="actions">
+      <a class="btn btn--plate" href={company.careersPortal} rel="noopener" target="_blank">{L('Lihat lowongan', 'View openings')} <Icon name="external" /></a>
+      <a class="btn btn--line" href={`mailto:${company.careersEmail}`}>{company.careersEmail}</a>
+    </div>
+  </PageHead>
+
+  <section class="section ground-alu">
+    <div class="wrap split">
+      <h2 class="h2">{L('Diri Anda yang sejati', 'Your pure self')}</h2>
+      <div class="prose">
+        <p class="lead">{L('Apa pun latar pendidikan atau keahlian Anda, kami menyambut diri Anda yang sejati untuk bergabung bersama kami.', 'Whatever your education background or your expertise is, we welcome your pure self to join us.')}</p>
+        <p>{L('Kami sedang membangun salah satu pusat pengolahan nikel terintegrasi di Sulawesi Tenggara: tambang, jeti, smelter RKEF, dan kawasan industri. Pekerjaan ini membutuhkan insinyur tambang dan metalurgi, ahli geologi, operator, tenaga K3 dan lingkungan, hingga keuangan dan hubungan masyarakat.', 'We are building one of Southeast Sulawesi’s integrated nickel processing centres: mine, jetties, RKEF smelter and industrial park. The work needs mining and metallurgical engineers, geologists, operators, safety and environmental specialists, finance and community relations.')}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="team ground-net">
+    <div class="wrap">
+      <Image src={team} alt={L('Mosaik wajah tim ASPIRE', 'A mosaic of ASPIRE team members')} widths={[375, 750]} sizes="(min-width: 800px) 750px, 100vw" />
+    </div>
+  </section>
+
+  <section class="section ground-alu-hi">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2">{L('Yang kami pegang', 'What we hold to')}</h2>
+      </div>
+      <ul class="vals">
+        {values.map((v) => (
+          <li>
+            <h3 class="h3">{v.name[lang]}</h3>
+            <p>{v.body[lang]}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Bench fill="var(--alu)" shape="c" />
+  <section class="section ground-alu">
+    <div class="wrap split">
+      <div class="section-head">
+        <h2 class="h2">{L('Cara melamar', 'How to apply')}</h2>
+      </div>
+      <div>
+        <ol class="steps">
+          <li>
+            <span class="stamp">{L('Langkah', 'Step')} 1</span>
+            <h3 class="h3">{L('Pilih lowongan', 'Choose an opening')}</h3>
+            <p>{L('Lihat posisi yang dibuka di portal karier kami.', 'See open positions on our careers portal.')} <a href={company.careersPortal} rel="noopener" target="_blank">stargo.odoo.com/jobs</a></p>
+          </li>
+          <li>
+            <span class="stamp">{L('Langkah', 'Step')} 2</span>
+            <h3 class="h3">{L('Kirim lamaran', 'Send your application')}</h3>
+            <p>{L('Lamar langsung di portal, atau kirim CV ke', 'Apply on the portal, or email your CV to')} <a href={`mailto:${company.careersEmail}`}>{company.careersEmail}</a>.</p>
+          </li>
+          <li>
+            <span class="stamp">{L('Langkah', 'Step')} 3</span>
+            <h3 class="h3">{L('Seleksi', 'Selection')}</h3>
+            <TBD note={L('Tahapan seleksi (tes, wawancara, MCU) dan perkiraan waktu.', 'Selection stages (tests, interviews, medical check) and typical timing.')} />
+          </li>
+        </ol>
+        <div class="extra">
+          <TBD block title={L('Benefit & lokasi kerja', 'Benefits & work locations')} note={L('Benefit karyawan, pola roster lokasi tambang, akomodasi, dan program magang/graduate.', 'Employee benefits, site roster pattern, accommodation and internship/graduate programmes.')} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight ground-laterite fraud" role="note" aria-labelledby="fraud-title">
+    <div class="wrap fraud__inner">
+      <Icon name="shield" size={36} />
+      <div>
+        <h2 id="fraud-title" class="h3">{L('Waspada penipuan rekrutmen', 'Beware of recruitment fraud')}</h2>
+        <p>{L(
+          `ASPIRE tidak pernah memungut biaya apa pun dalam proses rekrutmen, termasuk untuk tiket, akomodasi, atau tes kesehatan. Informasi resmi hanya melalui portal karier kami dan email berdomain @aspire.id. Laporkan tawaran mencurigakan ke ${company.careersEmail}.`,
+          `ASPIRE never charges any fee during recruitment, including for travel, accommodation or medical tests. Official information comes only through our careers portal and @aspire.id email addresses. Report suspicious offers to ${company.careersEmail}.`,
+        )}</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .team {
+    padding-block: var(--s-7);
+  }
+
+  .team :global(img) {
+    width: 100%;
+    max-width: 750px;
+    height: auto;
+    margin-inline: auto;
+    border-radius: 3px;
+  }
+
+  .vals {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-6);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  }
+
+  .vals li {
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+    padding-top: var(--s-3);
+    border-top: 3px solid var(--laterite);
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+
+  .steps li {
+    display: grid;
+    gap: var(--s-2);
+    justify-items: start;
+    padding: var(--s-5) 0;
+    border-top: 1px solid var(--alu-line);
+  }
+
+  @media (min-width: 720px) {
+    .steps li:nth-child(2) { margin-left: 2rem; }
+    .steps li:nth-child(3) { margin-left: 4rem; }
+  }
+
+  .extra {
+    margin-top: var(--s-6);
+  }
+
+  .fraud {
+    margin-top: var(--s-7);
+  }
+
+  .fraud__inner {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--s-5);
+    align-items: start;
+  }
+
+  .fraud__inner > div {
+    display: grid;
+    gap: var(--s-3);
+    max-width: 70ch;
+  }
+</style>

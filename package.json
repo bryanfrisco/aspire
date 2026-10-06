@@ -1,0 +1,23 @@
+{
+  "name": "aspire-stargate-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Corporate website of PT Anugerah Surya Pacific Resources (ASPIRE Stargate). Static Astro build, Indonesian/English.",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "todo": "node scripts/todo.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/big-shoulders-stencil-display": "^5.3.0",
+    "astro": "^7.3.5",
+    "sharp": "^0.35.5"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

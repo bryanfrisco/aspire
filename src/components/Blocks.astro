@@ -1,0 +1,157 @@
+---
+// Renders the structured content blocks used by operation pages.
+import TBD from './TBD.astro';
+import Prov from './Prov.astro';
+import type { Block } from '../data/projects';
+import { ui, type Lang } from '../i18n';
+interface Props {
+  lang: Lang;
+  blocks: Block[];
+}
+const { lang, blocks } = Astro.props;
+const v = (x: string | { id: string; en: string }) => (typeof x === 'string' ? x : x[lang]);
+const L = (id: string, en: string) => (lang === 'id' ? id : en);
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+---
+<div class="blocks">
+  {blocks.map((b) => (
+    <section class={`block block--${b.kind}`} id={'title' in b && b.title ? slug(b.title.en) : undefined}>
+      {b.kind === 'text' && (
+        <>
+          {b.title && <h2 class="block__title">{b.title[lang]}</h2>}
+          <div class="prose">{b.body[lang].map((p) => <p>{p}</p>)}</div>
+        </>
+      )}
+
+      {b.kind === 'facts' && (
+        <>
+          {b.title && <h2 class="block__title">{b.title[lang]}</h2>}
+          <table class="ledger">
+            <tbody>
+              {b.rows.map((r) => (
+                <tr><th scope="row">{r.label[lang]}</th><td>{v(r.value)}</td></tr>
+              ))}
+            </tbody>
+          </table>
+          {b.source && <Prov label={ui[lang].source} text={b.source[lang]} />}
+        </>
+      )}
+
+      {b.kind === 'list' && (
+        <>
+          {b.title && <h2 class="block__title">{b.title[lang]}</h2>}
+          <ul class:list={['rule-list', 'block__list', b.columns && 'cols-2']}>
+            {b.items[lang].map((i) => <li>{i}</li>)}
+          </ul>
+        </>
+      )}
+
+      {b.kind === 'grades' && (
+        <>
+          {b.title && <h2 class="block__title">{b.title[lang]}</h2>}
+          <div class="ledger-scroll">
+            <table class="ledger">
+              <thead>
+                <tr>
+                  <th scope="col">{L('Kategori', 'Category')}</th>
+                  <th scope="col" class="num">{L('Ton', 'Tons')}</th>
+                  <th scope="col" class="num">Ni %</th>
+                  <th scope="col" class="num">Fe %</th>
+                  <th scope="col" class="num">SiO₂ %</th>
+                  <th scope="col" class="num">MgO %</th>
+                  <th scope="col" class="num">Al₂O₃ %</th>
+                  <th scope="col" class="num">Co %</th>
+                </tr>
+              </thead>
+              <tbody>
+                {b.rows.map((r) => (
+                  <tr>
+                    <th scope="row">{r.name[lang]}</th>
+                    <td class="num">{lang === 'id' ? r.tons.replaceAll(',', '.') : r.tons}</td>
+                    <td class="num">{lang === 'id' ? r.ni.replace('.', ',') : r.ni}</td>
+                    <td class="num">{lang === 'id' ? r.fe.replace('.', ',') : r.fe}</td>
+                    <td class="num">{r.sio2 ? (lang === 'id' ? r.sio2.replace('.', ',') : r.sio2) : '—'}</td>
+                    <td class="num">{r.mgo ? (lang === 'id' ? r.mgo.replace('.', ',') : r.mgo) : '—'}</td>
+                    <td class="num">{r.al2o3 ? (lang === 'id' ? r.al2o3.replace('.', ',') : r.al2o3) : '—'}</td>
+                    <td class="num">{r.co ? (lang === 'id' ? r.co.replace('.', ',') : r.co) : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Prov label={ui[lang].source} text={b.source[lang]} />
+        </>
+      )}
+
+      {b.kind === 'record' && (
+        <>
+          {b.title && <h2 class="block__title">{b.title[lang]}</h2>}
+          <ol class="rule-list record">
+            {b.rows.map((r) => (
+              <li>
+                <span class="stamp record__years">{r.years}</span>
+                <div>
+                  <h3 class="h3">{r.name}</h3>
+                  <p>{r.body[lang]}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </>
+      )}
+
+      {b.kind === 'tbd' && <TBD block title={b.title[lang]} note={b.note[lang]} />}
+    </section>
+  ))}
+</div>
+
+<style>
+  .blocks {
+    display: grid;
+    gap: var(--s-8);
+  }
+
+  .block {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+  }
+
+  .block__title {
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
+    font-family: var(--display);
+    font-weight: 820;
+    text-transform: uppercase;
+    line-height: 1;
+    padding-top: var(--s-3);
+    border-top: 3px solid var(--ink);
+  }
+
+  .block--facts,
+  .block--grades {
+    max-width: 52rem;
+  }
+
+  .block__list > li {
+    padding: 0.6rem 0;
+  }
+
+  .record > li {
+    display: grid;
+    gap: var(--s-2) var(--s-6);
+  }
+
+  .record p {
+    margin-top: 0.4rem;
+    max-width: 60ch;
+  }
+
+  @media (min-width: 720px) {
+    .record > li {
+      grid-template-columns: 9rem 1fr;
+    }
+    .record__years {
+      padding-top: 0.35rem;
+    }
+  }
+</style>
