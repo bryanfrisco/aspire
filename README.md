@@ -46,6 +46,7 @@ PUBLIC_FORM_ENDPOINT=https://formspree.io/f/xxxx npm run build
   error_page 404 /404.html;
   location /_astro/ { expires 1y; add_header Cache-Control "public, immutable"; }
   ```
+- **Vercel** (current preview, connected to the GitHub repo; every push to `main` deploys): builds on Vercel carry `<meta name="robots" content="noindex">` on every page, so the preview stays out of search results while www.aspire.id is still the old site. At launch, add the environment variable `SITE_LIVE=true` in Vercel (Settings → Environment Variables) and redeploy. Builds on other hosts are unaffected.
 
 The root `/` sends visitors to `/id/`, or to `/en/` when their browser language isn't Indonesian.
 

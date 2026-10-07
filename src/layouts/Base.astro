@@ -22,7 +22,10 @@ interface Props {
   rail?: { id: string; label: string }[];
 }
 
-const { lang, title, description, image = ogDefault, type = 'website', noindex = false, jsonld = [], rail } = Astro.props;
+const { lang, title, description, image = ogDefault, type = 'website', noindex: pageNoindex = false, jsonld = [], rail } = Astro.props;
+// Vercel preview of the redesign: keep it out of search until it replaces www.aspire.id.
+// Set SITE_LIVE=true in the Vercel project env to lift this at launch.
+const noindex = pageNoindex || (process.env.VERCEL === '1' && process.env.SITE_LIVE !== 'true');
 const path = Astro.url.pathname;
 const site = Astro.site ?? new URL(company.url);
 const canonical = new URL(path, site).href;
